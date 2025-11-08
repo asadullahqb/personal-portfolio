@@ -17,12 +17,13 @@ function TypewriterWelcome() {
 
   // Refs for measurement and width lock
   const visibleSpanRef = useRef<HTMLHeadingElement>(null);
+  const measureRef = useRef<HTMLSpanElement>(null);
   const [textWidth, setTextWidth] = useState<number | undefined>(undefined);
 
-  // Measure visible span when text changes, so width is stable even when faded
+  // Improved: Always measure text by a hidden span and use margin auto for horizontal center.
   useEffect(() => {
-    if (visibleSpanRef.current) {
-      setTextWidth(visibleSpanRef.current.offsetWidth);
+    if (measureRef.current) {
+      setTextWidth(measureRef.current.offsetWidth);
     }
   }, [typed, done, faded]);
 
@@ -60,75 +61,82 @@ function TypewriterWelcome() {
     // eslint-disable-next-line
   }, [done]);
 
-  // Both visible and invisible span for reliable width lock
+  // Fully center using grid (most robust with margin set to auto), also on all screen sizes
   return (
-    <div
-      style={{
-        width: textWidth !== undefined ? `${textWidth}px` : "auto",
-        display: "inline-block",
-        textAlign: "left",
-        verticalAlign: "top",
-        position: "relative"
-      }}
-    >
-      {/* Hidden span for measuring actual text+cursor width */}
-      <span
+    <div className="w-full h-full min-h-[80vh] grid place-items-center">
+      {/* Use a container div that is centered horizontally by grid/auto, width-locked by measured span */}
+      <div
         style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          opacity: 0,
-          pointerEvents: "none",
-          whiteSpace: "pre",
-          fontSize: "3rem",
-          fontWeight: 700,
-          fontFamily: "inherit"
+          width: textWidth !== undefined ? `${textWidth}px` : "auto",
+          marginLeft: "auto",
+          marginRight: "auto",
+          display: "block",
+          textAlign: "center",
+          position: "relative"
         }}
-        className="text-5xl font-bold"
-        aria-hidden="true"
       >
-        {FULL_TEXT}
+        {/* Hidden span for measuring actual text+cursor width */}
         <span
+          ref={measureRef}
           style={{
-            display: "inline-block",
-            width: "0.5em",
-            borderRight: "2px solid #222",
-            verticalAlign: "text-bottom"
+            opacity: 0,
+            pointerEvents: "none",
+            whiteSpace: "pre",
+            fontSize: "3rem",
+            fontWeight: 700,
+            fontFamily: "inherit",
+            position: "absolute",
+            left: 0,
+            top: 0,
           }}
-        />
-      </span>
-      <h1
-        ref={visibleSpanRef}
-        className="text-5xl font-bold transition-opacity duration-500"
-        style={{
-          opacity: faded ? 0 : 1,
-          transition: `opacity ${FADE_DURATION}ms`,
-          whiteSpace: "pre",
-          minHeight: "1em"
-        }}
-        aria-label="Welcome"
-      >
-        {typed}
-        <span
+          className="text-5xl font-bold"
+          aria-hidden="true"
+        >
+          {FULL_TEXT}
+          <span
+            style={{
+              display: "inline-block",
+              width: "0.5em",
+              borderRight: "2px solid #222",
+              verticalAlign: "text-bottom"
+            }}
+          />
+        </span>
+        <h1
+          ref={visibleSpanRef}
+          className="text-5xl font-bold transition-opacity duration-500"
           style={{
-            display: "inline-block",
-            width: "0.5em",
-            opacity: done ? 0 : 0.6,
-            animation: !done ? "blink-cursor 1.1s steps(1) infinite" : "none",
-            borderRight: !done ? "2px solid #222" : "none",
-            verticalAlign: "text-bottom",
-            transition: "opacity 100ms"
+            opacity: faded ? 0 : 1,
+            transition: `opacity ${FADE_DURATION}ms`,
+            whiteSpace: "pre",
+            minHeight: "1em",
+            textAlign: "center",
+            margin: 0, // remove browser default margin
           }}
-        />
-        <style jsx>{`
-          @keyframes blink-cursor {
-            0% { opacity: 0.6; }
-            49% { opacity: 0.6; }
-            50% { opacity: 0; }
-            100% { opacity: 0; }
-          }
-        `}</style>
-      </h1>
+          aria-label="Welcome"
+        >
+          {typed}
+          <span
+            style={{
+              display: "inline-block",
+              width: "0.5em",
+              opacity: done ? 0 : 0.6,
+              animation: !done ? "blink-cursor 1.1s steps(1) infinite" : "none",
+              borderRight: !done ? "2px solid #222" : "none",
+              verticalAlign: "text-bottom",
+              transition: "opacity 100ms"
+            }}
+          />
+          <style jsx>{`
+            @keyframes blink-cursor {
+              0% { opacity: 0.6; }
+              49% { opacity: 0.6; }
+              50% { opacity: 0; }
+              100% { opacity: 0; }
+            }
+          `}</style>
+        </h1>
+      </div>
     </div>
   );
 }
@@ -137,6 +145,7 @@ export default function HomePage() {
   return (
     <main>
       <section id="home" className="min-h-screen flex items-center justify-center bg-gray-50">
+        {/* The section is already centered, but TypewriterWelcome is now also flex/grid-centered for robustness */}
         <TypewriterWelcome />
       </section>
 
