@@ -20,14 +20,6 @@ export const metadata: Metadata = {
   description: "Passionate full-stack Data Scientist and AI Developer.",
 };
 
-// Move navbar items to their own file or keep here for props
-const navItems = [
-  { name: "Home", href: "/" },
-  { name: "AI Tools", href: "/tools" },
-  { name: "Publications", href: "/publications" },
-  { name: "Mentorship", href: "/mentorship" },
-];
-
 // Import the Navbar as a client component
 import Navbar from "./Navbar";
 
@@ -41,7 +33,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Navbar navItems={navItems} />
+        <Navbar />
         {children}
       </body>
     </html>
