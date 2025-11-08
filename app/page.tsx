@@ -1,24 +1,25 @@
-import Image from "next/image";
+import Publications from "./publications/page";
+import Mentorship from "./mentorship/page";
+import Tools from "./tools/page";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-col items-center justify-center p-8 text-center max-w-2xl w-full">
-        <div className="w-96 -mb-4">
-          <Image
-            src="/lion/construction.svg"
-            alt="Construction Lion"
-            width={500}
-            height={500}
-            priority
-            className="w-full h-auto object-contain dark:invert scale-110 select-none pointer-events-none"
-            draggable={false}
-          />
-        </div>
-        <h1 className="text-4xl font-bold text-zinc-800 dark:text-zinc-100 -mt-10">
-          Under Construction
-        </h1>
-      </main>
-    </div>
+    <main>
+      <section id="home" className="min-h-screen flex items-center justify-center bg-gray-50">
+        <h1 className="text-5xl font-bold">Welcome</h1>
+      </section>
+
+      <section id="tools" className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Tools />
+      </section>
+
+      <section id="publications" className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Publications />
+      </section>
+
+      <section id="mentorship" className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Mentorship />
+      </section>
+    </main>
   );
 }

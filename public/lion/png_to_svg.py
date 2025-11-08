@@ -11,12 +11,17 @@ def png_to_svg(png_path, svg_path):
     # Convert image to numpy array
     bitmap = np.array(image)
     
-    # Create SVG drawing
-    dwg = svgwrite.Drawing(svg_path, profile='tiny')
-    
-    # Find contours and create paths
+    # Find image dimensions
     height, width, _ = bitmap.shape
 
+    # Create SVG drawing with a proper viewBox
+    dwg = svgwrite.Drawing(
+        svg_path, 
+        size=(width, height), 
+        profile='tiny',
+        viewBox=f"0 0 {width} {height}"
+    )
+    
     # Tolerance for considering a pixel "white" (near-white)
     WHITE_TOLERANCE = 250  # 0-255; 250 treats very light pixels as background
 
