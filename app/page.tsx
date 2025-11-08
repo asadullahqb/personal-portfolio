@@ -9,7 +9,7 @@ function TypewriterWelcome() {
   const FULL_TEXT = "Welcome.";
   const ANIMATION_DELAY = 120;
   const PAUSE_AFTER_TYPE = 600;
-  const FADE_DURATION = 500.00;
+  const FADE_DURATION = 500;
 
   const [typed, setTyped] = useState("");
   const [faded, setFaded] = useState(false);
@@ -20,7 +20,7 @@ function TypewriterWelcome() {
   const measureRef = useRef<HTMLSpanElement>(null);
   const [textWidth, setTextWidth] = useState<number | undefined>(undefined);
 
-  // Improved: Always measure text by a hidden span and use margin auto for horizontal center.
+  // Always measure text by a hidden span
   useEffect(() => {
     if (measureRef.current) {
       setTextWidth(measureRef.current.offsetWidth);
@@ -61,18 +61,27 @@ function TypewriterWelcome() {
     // eslint-disable-next-line
   }, [done]);
 
-  // Fully center using grid (most robust with margin set to auto), also on all screen sizes
+  // Use flexbox to center both vertically and horizontally and ensure max available height on all screen sizes
   return (
-    <div className="w-full h-full min-h-[80vh] grid place-items-center">
-      {/* Use a container div that is centered horizontally by grid/auto, width-locked by measured span */}
+    <div
+      style={{
+        width: "100vw",
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "none", // Let the section bg show
+      }}
+    >
       <div
         style={{
           width: textWidth !== undefined ? `${textWidth}px` : "auto",
-          marginLeft: "auto",
-          marginRight: "auto",
-          display: "block",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
           textAlign: "center",
-          position: "relative"
+          position: "relative",
         }}
       >
         {/* Hidden span for measuring actual text+cursor width */}
@@ -111,7 +120,8 @@ function TypewriterWelcome() {
             whiteSpace: "pre",
             minHeight: "1em",
             textAlign: "center",
-            margin: 0, // remove browser default margin
+            margin: 0,
+            width: "100%",
           }}
           aria-label="Welcome"
         >
@@ -144,8 +154,12 @@ function TypewriterWelcome() {
 export default function HomePage() {
   return (
     <main>
-      <section id="home" className="min-h-screen flex items-center justify-center bg-gray-50">
-        {/* The section is already centered, but TypewriterWelcome is now also flex/grid-centered for robustness */}
+      <section
+        id="home"
+        className="min-h-screen w-full flex items-center justify-center bg-gray-50 p-0 m-0"
+        style={{ position: "relative" }}
+      >
+        {/* TypewriterWelcome now fully centers itself both vertically/horizontally */}
         <TypewriterWelcome />
       </section>
 
