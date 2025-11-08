@@ -11,7 +11,8 @@ export default function Home() {
             width={500}
             height={500}
             priority
-            className="w-full h-auto object-contain dark:invert scale-110"
+            className="w-full h-auto object-contain dark:invert scale-110 select-none pointer-events-none"
+            draggable={false}
           />
         </div>
         <h1 className="text-4xl font-bold text-zinc-800 dark:text-zinc-100 -mt-10">
