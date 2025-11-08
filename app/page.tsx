@@ -9,7 +9,7 @@ function TypewriterWelcome() {
   const FULL_TEXT = "Welcome.";
   const ANIMATION_DELAY = 120;
   const PAUSE_AFTER_TYPE = 600;
-  const FADE_DURATION = 500;
+  const FADE_DURATION = 500.00;
 
   const [typed, setTyped] = useState("");
   const [faded, setFaded] = useState(false);
