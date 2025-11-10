@@ -6,20 +6,35 @@ import Mentorship from "./mentorship/page";
 import Tools from "./tools/page";
 
 // Determine backend URL based on environment (dev or prod)
-function getBackendBaseUrl() {
-  // You can use NEXT_PUBLIC_BACKEND_URL for deployment, fallback to localhost for dev
-  if (typeof window !== "undefined" && (window as any).__NEXT_PUBLIC_BACKEND_URL__) {
-    return (window as any).__NEXT_PUBLIC_BACKEND_URL__;
-  }
-  if (process.env.NEXT_PUBLIC_BACKEND_URL) {
-    return process.env.NEXT_PUBLIC_BACKEND_URL;
-  }
-  // Vercel/Netlify may not inject env vars into browser, so check for prod domain
-  if (typeof window !== "undefined" && window.location && window.location.hostname.includes("your-production-domain.com")) {
+// Now respects the 'env' function argument instead of only using runtime detection
+function getBackendBaseUrl(env: 'development' | 'production' = 'development') {
+  // 1. Check explicitly provided env
+  if (env === 'production') {
+    // Prefer environment variables when available
+    if (typeof window !== "undefined" && (window as any).__NEXT_PUBLIC_BACKEND_URL__) {
+      return (window as any).__NEXT_PUBLIC_BACKEND_URL__;
+    }
+    if (process.env.NEXT_PUBLIC_BACKEND_URL) {
+      return process.env.NEXT_PUBLIC_BACKEND_URL;
+    }
+    // Fallback: recognize typical prod domain
+    if (typeof window !== "undefined" && window.location && window.location.hostname.includes("your-production-domain.com")) {
+      return "https://personal-portfolio-backend-nm7v.onrender.com";
+    }
+    // Default to production backend
     return "https://personal-portfolio-backend-nm7v.onrender.com";
+  } else {
+    // env == 'development'
+    // Allow override for local development as well
+    if (typeof window !== "undefined" && (window as any).__NEXT_PUBLIC_BACKEND_URL__) {
+      return (window as any).__NEXT_PUBLIC_BACKEND_URL__;
+    }
+    if (process.env.NEXT_PUBLIC_BACKEND_URL) {
+      return process.env.NEXT_PUBLIC_BACKEND_URL;
+    }
+    // Default to localhost for dev
+    return "http://localhost:8000";
   }
-  // Default to localhost (development)
-  return "localhost:8000";
 }
 
 function getUserIP(): string | undefined {
@@ -51,7 +66,7 @@ function TypewriterWelcome() {
   useEffect(() => {
     async function fetchFullText() {
       try {
-        const backendBase = getBackendBaseUrl();
+        const backendBase = getBackendBaseUrl('production');
         const response = await fetch(`${backendBase}/welcome/`, {
           method: "POST",
           headers: {
