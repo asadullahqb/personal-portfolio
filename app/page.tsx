@@ -5,8 +5,35 @@ import Publications from "./publications/page";
 import Mentorship from "./mentorship/page";
 import Tools from "./tools/page";
 
+// Determine backend URL based on environment (dev or prod)
+function getBackendBaseUrl() {
+  // You can use NEXT_PUBLIC_BACKEND_URL for deployment, fallback to localhost for dev
+  if (typeof window !== "undefined" && (window as any).__NEXT_PUBLIC_BACKEND_URL__) {
+    return (window as any).__NEXT_PUBLIC_BACKEND_URL__;
+  }
+  if (process.env.NEXT_PUBLIC_BACKEND_URL) {
+    return process.env.NEXT_PUBLIC_BACKEND_URL;
+  }
+  // Vercel/Netlify may not inject env vars into browser, so check for prod domain
+  if (typeof window !== "undefined" && window.location && window.location.hostname.includes("your-production-domain.com")) {
+    return "https://personal-portfolio-backend-nm7v.onrender.com";
+  }
+  // Default to localhost (development)
+  return "localhost:8000";
+}
+
+function getUserIP(): string | undefined {
+  // Fix: safely extract __NEXT_PUBLIC_USER_IP__ if it's defined globally
+  // TypeScript fix: cast to any so that window['__NEXT_PUBLIC_USER_IP__'] doesn't complain
+  if (typeof window !== "undefined" && (window as any).__NEXT_PUBLIC_USER_IP__) {
+    return (window as any).__NEXT_PUBLIC_USER_IP__;
+  }
+  return undefined;
+}
+
 function TypewriterWelcome() {
-  const FULL_TEXT = "Welcome.";
+  // Remove hardcoded FULL_TEXT, fetch from backend instead
+  const [fullText, setFullText] = useState<string | null>(null);
   const ANIMATION_DELAY = 120;
   const PAUSE_AFTER_TYPE = 600;
   const FADE_DURATION = 500;
@@ -20,24 +47,59 @@ function TypewriterWelcome() {
   const measureRef = useRef<HTMLSpanElement>(null);
   const [textWidth, setTextWidth] = useState<number | undefined>(undefined);
 
+  // Fetch FULL_TEXT from FastAPI backend
+  useEffect(() => {
+    async function fetchFullText() {
+      try {
+        const backendBase = getBackendBaseUrl();
+        const response = await fetch(`${backendBase}/welcome/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          // Fix: safely retrieve user IP or pass undefined if not available
+          body: JSON.stringify({
+            // ip: getUserIP()
+            ip: "81.45.132.217"
+
+          })
+        });
+        if (!response.ok) {
+          throw new Error(`Network response was not ok (${response.status})`);
+        }
+        const data = await response.json();
+        console.log(data);
+        // Assume API returns 
+        setFullText(data.message ?? "Welcome.");
+      } catch (err) {
+        // Fallback on error
+        setFullText("Welcome.");
+      }
+    }
+    fetchFullText();
+  }, []);
+
   // Always measure text by a hidden span
   useEffect(() => {
     if (measureRef.current) {
       setTextWidth(measureRef.current.offsetWidth);
     }
-  }, [typed, done, faded]);
+  }, [typed, done, faded, fullText]);
 
   useEffect(() => {
-    let typingTimer: NodeJS.Timeout | undefined;
-    let pauseTimer: NodeJS.Timeout | undefined;
-    let fadeTimer: NodeJS.Timeout | undefined;
+    if (typeof fullText !== "string") return; // Wait for API
+
+    let typingTimer: NodeJS.Timeout | null = null;
+    let pauseTimer: NodeJS.Timeout | null = null;
+    let fadeTimer: NodeJS.Timeout | null = null;
 
     if (!done) {
       let idx = 0;
 
       function typeNext() {
-        if (idx <= FULL_TEXT.length) {
-          setTyped(FULL_TEXT.slice(0, idx));
+        if (typeof fullText === "string" && idx <= fullText.length) {
+          setTyped(fullText.slice(0, idx));
           idx++;
           typingTimer = setTimeout(typeNext, ANIMATION_DELAY);
         } else {
@@ -59,7 +121,30 @@ function TypewriterWelcome() {
       if (fadeTimer) clearTimeout(fadeTimer);
     };
     // eslint-disable-next-line
-  }, [done]);
+  }, [done, fullText]);
+
+  // If loading, show nothing or a spinner (optional)
+  if (fullText === null) {
+    return (
+      <div
+        style={{
+          width: "100vw",
+          height: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "none",
+        }}
+      >
+        <div
+          className="text-5xl font-bold"
+          style={{ color: "#999" }}
+        >
+          ...
+        </div>
+      </div>
+    );
+  }
 
   // Use flexbox to center both vertically and horizontally and ensure max available height on all screen sizes
   return (
@@ -101,7 +186,7 @@ function TypewriterWelcome() {
           className="text-5xl font-bold"
           aria-hidden="true"
         >
-          {FULL_TEXT}
+          {typeof fullText === "string" ? fullText : ""}
           <span
             style={{
               display: "inline-block",
