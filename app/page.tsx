@@ -75,9 +75,7 @@ function TypewriterWelcome() {
           },
           // Fix: safely retrieve user IP or pass undefined if not available
           body: JSON.stringify({
-            // ip: getUserIP()
-            ip: "81.45.132.217"
-
+            ip: getUserIP()
           })
         });
         if (!response.ok) {
