@@ -58,11 +58,6 @@ function TypewriterWelcome() {
   const [faded, setFaded] = useState(false);
   const [done, setDone] = useState(false);
 
-  // Refs for measurement and width lock
-  const visibleSpanRef = useRef<HTMLHeadingElement>(null);
-  const measureRef = useRef<HTMLSpanElement>(null);
-  const [textWidth, setTextWidth] = useState<number | undefined>(undefined);
-
   // Fetch FULL_TEXT from FastAPI backend
   useEffect(() => {
     async function fetchFullText() {
@@ -94,12 +89,7 @@ function TypewriterWelcome() {
     fetchFullText();
   }, []);
 
-  // Always measure text by a hidden span
-  useEffect(() => {
-    if (measureRef.current) {
-      setTextWidth(measureRef.current.offsetWidth);
-    }
-  }, [typed, done, faded, fullText]);
+
 
   useEffect(() => {
     if (typeof fullText !== "string") return; // Wait for API
@@ -140,20 +130,8 @@ function TypewriterWelcome() {
   // If loading, show nothing or a spinner (optional)
   if (fullText === null) {
     return (
-      <div
-        style={{
-          width: "100%",
-          height: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "none",
-        }}
-      >
-        <div
-          className="text-4xl sm:text-5xl md:text-6xl font-bold"
-          style={{ color: "#999" }}
-        >
+      <div className="w-full h-screen flex items-center justify-center bg-none">
+        <div className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-400">
           ...
         </div>
       </div>
@@ -162,92 +140,26 @@ function TypewriterWelcome() {
 
   // Use flexbox to center both vertically and horizontally and ensure max available height on all screen sizes
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "none", // Let the section bg show
-        overflow: "hidden",
-      }}
-    >
+    <div className="w-full h-screen flex items-center justify-center bg-none overflow-hidden">
       <div
-        style={{
-          width: "100%",
-          maxWidth: "1000px",
-          padding: "0 1rem",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          textAlign: "center",
-          position: "relative",
-        }}
-        className="px-4 sm:px-8 md:px-12"
+        className="w-full max-w-4xl px-4 sm:px-6 md:px-8 flex flex-col items-center justify-center text-center"
       >
-        {/* Hidden span for measuring actual text+cursor width */}
-        <span
-          ref={measureRef}
-          style={{
-            opacity: 0,
-            pointerEvents: "none",
-            whiteSpace: "pre",
-            fontSize: "3rem",
-            fontWeight: 700,
-            fontFamily: "inherit",
-            position: "absolute",
-            left: 0,
-            top: 0,
-          }}
-          className="text-4xl sm:text-5xl md:text-6xl font-bold"
-          aria-hidden="true"
-        >
-          {typeof fullText === "string" ? fullText : ""}
-          <span
-            style={{
-              display: "inline-block",
-              width: "0.5em",
-              borderRight: "2px solid #222",
-              verticalAlign: "text-bottom"
-            }}
-          />
-        </span>
         <h1
-          ref={visibleSpanRef}
-          className="text-4xl sm:text-5xl md:text-6xl font-bold transition-opacity duration-500"
+          className="text-4xl sm:text-5xl md:text-6xl font-bold transition-opacity duration-500 inline-block"
           style={{
             opacity: faded ? 0 : 1,
             transition: `opacity ${FADE_DURATION}ms`,
-            whiteSpace: "pre",
-            minHeight: "1em",
-            textAlign: "center",
-            margin: 0,
-            width: "100%",
           }}
           aria-label="Welcome"
         >
           {typed}
           <span
+            className={`inline-block w-1 sm:w-2 h-8 sm:h-12 ml-1 ${!done ? 'animate-pulse' : 'opacity-0'}`}
             style={{
-              display: "inline-block",
-              width: "0.5em",
+              backgroundColor: "#222",
               opacity: done ? 0 : 0.6,
-              animation: !done ? "blink-cursor 1.1s steps(1) infinite" : "none",
-              borderRight: !done ? "2px solid #222" : "none",
-              verticalAlign: "text-bottom",
-              transition: "opacity 100ms"
             }}
           />
-          <style jsx>{`
-            @keyframes blink-cursor {
-              0% { opacity: 0.6; }
-              49% { opacity: 0.6; }
-              50% { opacity: 0; }
-              100% { opacity: 0; }
-            }
-          `}</style>
         </h1>
       </div>
     </div>
