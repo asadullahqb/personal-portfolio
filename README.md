@@ -14,6 +14,10 @@ Visit the site at https://asadullahqamarbhatti.com
 
 When you access the site, you are greeted with a welcome message translated to the language of where you come from. This is powered by AI.
 
+#### Products
+
+A list of products available in the market that I contributed to or developed. Full credits and rights reserved to the company or party that I contributed to.
+
 #### Tools
 
 Here you will find a suite of custom-developed and useful AI-powered tools. Upcoming AI-powered tools include...
