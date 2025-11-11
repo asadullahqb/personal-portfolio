@@ -1,12 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ver 1.0 (11th November 2025)
+
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app). This repository is for the front-end and it is to be used along with the backend repository found here: https://github.com/asadullahqb/personal-portfolio-backend.
 
 ## Users
 
+### Getting Started
+
 Visit the site at https://asadullahqamarbhatti.com
 
-## Getting Started for Developers
+### Features
 
-### Clone the Repository
+#### Welcome Page
+
+When you access the site, you are greeted with a welcome message translated to the language of where you come from. This is powered by AI.
+
+#### Tools
+
+Here you will find a suite of custom-developed and useful AI-powered tools. Upcoming AI-powered tools include...
+
+- Daily horoscope generator tool,
+- Crime rate predictor based on location,
+- How hot is it gonna be based on location and time?,
+- Pokemon Unite Analytics Tool
+- More coming soon.
+
+## Developers
+
+Please be reminded that this repo is only for the frontend. The project was separated to two repos because I was exploring a wide variety of stacks to power the application and preferred keeping the complexity to a minimum from the kickstart. In the future, I plan to merge everything into one repo and use deployment best-practices.
+
+### Getting Started
+
+#### Clone the Repository
 
 If you haven't already, clone this repository from GitHub:
 
@@ -15,7 +39,7 @@ git clone https://github.com/asadullahqb/personal-portfolio.git
 cd personal-portfolio
 ```
 
-### Install Dependencies
+#### Install Dependencies
 
 Then install the dependencies:
 
@@ -29,7 +53,7 @@ pnpm install
 bun install
 ```
 
-### Run the Development Server
+#### Run the Development Server
 
 Start the development server:
 
