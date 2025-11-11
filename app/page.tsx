@@ -151,7 +151,7 @@ function TypewriterWelcome() {
         }}
       >
         <div
-          className="text-5xl font-bold"
+          className="text-6xl font-bold"
           style={{ color: "#999" }}
         >
           ...
@@ -175,7 +175,9 @@ function TypewriterWelcome() {
     >
       <div
         style={{
-          width: textWidth !== undefined ? `${textWidth}px` : "auto",
+          width: "100%",
+          maxWidth: "1000px",
+          padding: "0 3rem",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -213,7 +215,7 @@ function TypewriterWelcome() {
         </span>
         <h1
           ref={visibleSpanRef}
-          className="text-5xl font-bold transition-opacity duration-500"
+          className="text-6xl font-bold transition-opacity duration-500"
           style={{
             opacity: faded ? 0 : 1,
             transition: `opacity ${FADE_DURATION}ms`,
