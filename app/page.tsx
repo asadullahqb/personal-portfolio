@@ -182,16 +182,16 @@ export default function HomePage() {
         <Tools />
       </section>
 
+      <section id="associatedProducts" className="min-h-screen flex items-center justify-center bg-gray-50">
+        <AssociatedProducts />
+      </section>
+
       <section id="publications" className="min-h-screen flex items-center justify-center bg-gray-50">
         <Publications />
       </section>
 
       <section id="mentorship" className="min-h-screen flex items-center justify-center bg-gray-50">
         <Mentorship />
-      </section>
-
-      <section id="associatedProducts" className="min-h-screen flex items-center justify-center bg-gray-50">
-        <AssociatedProducts />
       </section>
     </main>
   );
