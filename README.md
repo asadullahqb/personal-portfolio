@@ -21,7 +21,7 @@ Here you will find a suite of custom-developed and useful AI-powered tools. Upco
 - Daily horoscope generator tool,
 - Crime rate predictor based on location,
 - How hot is it gonna be based on location and time?,
-- Pokemon Unite Analytics Tool
+- Pokemon Unite Analytics Tool, 
 - More coming soon.
 
 ## Developers
