@@ -1,8 +1,37 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+## Users
 
-First, run the development server:
+Visit the site at https://asadullahqamarbhatti.com
+
+## Getting Started for Developers
+
+### Clone the Repository
+
+If you haven't already, clone this repository from GitHub:
+
+```bash
+git clone https://github.com/asadullahqb/personal-portfolio.git
+cd personal-portfolio
+```
+
+### Install Dependencies
+
+Then install the dependencies:
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+# or
+bun install
+```
+
+### Run the Development Server
+
+Start the development server:
 
 ```bash
 npm run dev
