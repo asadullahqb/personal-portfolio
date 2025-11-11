@@ -151,7 +151,7 @@ function TypewriterWelcome() {
         }}
       >
         <div
-          className="text-6xl font-bold"
+          className="text-4xl sm:text-5xl md:text-6xl font-bold"
           style={{ color: "#999" }}
         >
           ...
@@ -177,7 +177,7 @@ function TypewriterWelcome() {
         style={{
           width: "100%",
           maxWidth: "1000px",
-          padding: "0 3rem",
+          padding: "0 1rem",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -185,6 +185,7 @@ function TypewriterWelcome() {
           textAlign: "center",
           position: "relative",
         }}
+        className="px-4 sm:px-8 md:px-12"
       >
         {/* Hidden span for measuring actual text+cursor width */}
         <span
@@ -200,7 +201,7 @@ function TypewriterWelcome() {
             left: 0,
             top: 0,
           }}
-          className="text-5xl font-bold"
+          className="text-4xl sm:text-5xl md:text-6xl font-bold"
           aria-hidden="true"
         >
           {typeof fullText === "string" ? fullText : ""}
@@ -215,7 +216,7 @@ function TypewriterWelcome() {
         </span>
         <h1
           ref={visibleSpanRef}
-          className="text-6xl font-bold transition-opacity duration-500"
+          className="text-4xl sm:text-5xl md:text-6xl font-bold transition-opacity duration-500"
           style={{
             opacity: faded ? 0 : 1,
             transition: `opacity ${FADE_DURATION}ms`,
