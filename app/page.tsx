@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import Publications from "./publications/page";
 import Mentorship from "./mentorship/page";
 import Tools from "./tools/page";
+import AssociatedProducts from "./associatedProducts/page";
 
 // Determine backend URL based on environment (dev or prod)
 // Now respects the 'env' function argument instead of only using runtime detection
@@ -271,6 +272,10 @@ export default function HomePage() {
 
       <section id="mentorship" className="min-h-screen flex items-center justify-center bg-gray-50">
         <Mentorship />
+      </section>
+
+      <section id="associatedProducts" className="min-h-screen flex items-center justify-center bg-gray-50">
+        <AssociatedProducts />
       </section>
     </main>
   );
