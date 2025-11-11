@@ -1,26 +1,7 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 
 export default function AssociatedProducts() {
-  const [senzoAppleIcon, setSenzoAppleIcon] = useState<string | null>(null);
-  const [posAppleIcon, setPosAppleIcon] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function fetchIcons() {
-      try {
-        const senzoRes = await fetch("https://itunes.apple.com/lookup?id=983961137", { cache: "no-store" });
-        const senzoData = await senzoRes.json();
-        setSenzoAppleIcon(senzoData?.results?.[0]?.artworkUrl512 || senzoData?.results?.[0]?.artworkUrl100 || null);
-      } catch {}
-      try {
-        const posRes = await fetch("https://itunes.apple.com/lookup?id=1325952009", { cache: "no-store" });
-        const posData = await posRes.json();
-        setPosAppleIcon(posData?.results?.[0]?.artworkUrl512 || posData?.results?.[0]?.artworkUrl100 || null);
-      } catch {}
-    }
-    fetchIcons();
-  }, []);
 
   const products = [
     {
@@ -31,7 +12,8 @@ export default function AssociatedProducts() {
         { label: "App Store", href: "https://apps.apple.com/au/app/senzo-pro/id983961137", type: "ios" },
         { label: "Google Play", href: "https://play.google.com/store/apps/details?id=my.com.senzo.senzopro2&hl=en-US&pli=1", type: "android" },
       ],
-      iconUrl: senzoAppleIcon ?? null,
+      // Proxy the Apple icon via same-origin API to avoid production CSP/CORS issues
+      iconUrl: "/api/icons/apple?appId=983961137",
     },
     {
       name: "Pos Malaysia",
@@ -40,7 +22,7 @@ export default function AssociatedProducts() {
       links: [
         { label: "App Store", href: "https://apps.apple.com/my/app/pos-malaysia/id1325952009", type: "ios" },
       ],
-      iconUrl: posAppleIcon ?? null,
+      iconUrl: "/api/icons/apple?appId=1325952009",
     },
   ];
 
