@@ -70,10 +70,11 @@ export default function AssociatedProducts() {
           <div
             ref={sliderRef}
             className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-2"
-            style={{ overscrollBehaviorX: "contain", WebkitOverflowScrolling: "touch" }}
+            style={{ overscrollBehaviorX: "contain", WebkitOverflowScrolling: "touch", touchAction: "pan-x" }}
           >
             {products.map((p) => (
-              <Card key={p.name} className="snap-center min-w-[85%]">
+              <div key={p.name} className="snap-center min-w-[85%]" style={{ scrollSnapStop: "always" }}>
+                <Card>
                 {/* Icon / Initials */}
                 <div className="flex items-center gap-4">
                   <div className="h-12 w-12 rounded-xl overflow-hidden ring-1 ring-zinc-200 bg-white flex items-center justify-center">
@@ -115,7 +116,8 @@ export default function AssociatedProducts() {
                     />
                   ))}
                 </div>
-              </Card>
+                </Card>
+              </div>
             ))}
           </div>
           <div className="flex justify-between mt-3">
