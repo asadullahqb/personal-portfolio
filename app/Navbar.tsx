@@ -83,7 +83,7 @@ export default function Navbar() {
             />
           </div>
           <span className="text-base sm:text-xl md:text-2xl font-bold">
-            Asadullah Qamar Bhatti | Data Scientist
+            Asad | Data Scientist
           </span>
         </div>
         {/* Desktop nav */}
