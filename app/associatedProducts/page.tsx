@@ -49,8 +49,12 @@ export default function AssociatedProducts() {
   };
 
   const sliderRef = useRef<HTMLDivElement>(null);
-  const scrollBy = (delta: number) =>
-    sliderRef.current?.scrollBy({ left: delta, behavior: "smooth" });
+  const scrollByCard = (direction: "next" | "prev") => {
+    const el = sliderRef.current;
+    if (!el) return;
+    const delta = Math.round(el.clientWidth * 0.9) * (direction === "next" ? 1 : -1);
+    el.scrollBy({ left: delta, behavior: "smooth" });
+  };
 
   return (
     <section className="w-full py-24 px-4 sm:px-6 md:px-8 font-sans">
@@ -70,11 +74,12 @@ export default function AssociatedProducts() {
           <div
             ref={sliderRef}
             className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-2"
+            style={{ overscrollBehaviorX: "contain", WebkitOverflowScrolling: "touch" }}
           >
             {products.map((p) => (
               <div
                 key={p.name}
-                className="snap-start min-w-[85%] group relative rounded-2xl bg-white/80 backdrop-blur ring-1 ring-zinc-200 hover:ring-blue-400 hover:shadow-xl transition duration-300 p-6 flex flex-col"
+                className="snap-center min-w-[85%] group relative rounded-2xl bg-white/80 backdrop-blur ring-1 ring-zinc-200 hover:ring-blue-400 hover:shadow-xl transition duration-300 p-6 flex flex-col"
               >
                 {/* Icon / Initials */}
                 <div className="flex items-center gap-4">
@@ -155,14 +160,14 @@ export default function AssociatedProducts() {
           </div>
           <div className="flex justify-between mt-3">
             <button
-              onClick={() => scrollBy(-320)}
+              onClick={() => scrollByCard("prev")}
               className="inline-flex items-center px-3 py-2 rounded-md bg-zinc-100 text-zinc-700 hover:bg-zinc-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-400"
               aria-label="Scroll products left"
             >
               ◀ Prev
             </button>
             <button
-              onClick={() => scrollBy(320)}
+              onClick={() => scrollByCard("next")}
               className="inline-flex items-center px-3 py-2 rounded-md bg-zinc-100 text-zinc-700 hover:bg-zinc-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-400"
               aria-label="Scroll products right"
             >
