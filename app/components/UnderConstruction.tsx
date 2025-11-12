@@ -7,27 +7,25 @@ interface UnderConstructionProps {
 }
 
 export default function UnderConstruction({
-  title = "Under Construction",
+  title = "This section is under construction.",
   imageSrc = "/lion/construction.svg",
   imageAlt = "Construction Lion"
 }: UnderConstructionProps) {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans">
-      <main className="flex flex-col items-center justify-center p-8 text-center max-w-2xl w-full">
-        <div className="w-96 -mb-4">
+    <div className="flex items-center justify-center font-sans">
+      <main className="flex flex-col items-center justify-center p-6 text-center max-w-md w-full">
+        <div className="w-72">
           <Image
             src={imageSrc}
             alt={imageAlt}
-            width={500}
-            height={500}
+            width={360}
+            height={360}
             priority
-            className="w-full h-auto object-contain scale-110 select-none pointer-events-none"
+            className="w-full h-auto object-contain select-none pointer-events-none"
             draggable={false}
           />
         </div>
-        <h1 className="text-4xl font-bold text-zinc-800 -mt-10">
-          {title}
-        </h1>
+        <p className="mt-4 text-sm sm:text-base text-zinc-600">{title}</p>
       </main>
     </div>
   );

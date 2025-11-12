@@ -178,19 +178,19 @@ export default function HomePage() {
         <TypewriterWelcome />
       </section>
 
-      <section id="tools" className="min-h-screen flex items-center justify-center bg-gray-50">
+      <section id="tools">
         <Tools />
       </section>
 
-      <section id="associatedProducts" className="min-h-screen flex items-center justify-center bg-gray-50">
+      <section id="associatedProducts">
         <AssociatedProducts />
       </section>
 
-      <section id="publications" className="min-h-screen flex items-center justify-center bg-gray-50">
+      <section id="publications">
         <Publications />
       </section>
 
-      <section id="mentorship" className="min-h-screen flex items-center justify-center bg-gray-50">
+      <section id="mentorship">
         <Mentorship />
       </section>
     </main>
