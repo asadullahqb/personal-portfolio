@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Asadullah Qamar Bhatti | Data Scientist",
+  title: "Asad | Data Scientist",
   description: "Passionate full-stack Data Scientist and AI Developer.",
   viewport: "width=device-width, initial-scale=1, maximum-scale=1",
 };
