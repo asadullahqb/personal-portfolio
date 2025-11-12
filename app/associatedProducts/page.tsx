@@ -24,6 +24,15 @@ export default function AssociatedProducts() {
       ],
       iconUrl: "/api/icons/apple?appId=1325952009",
     },
+    {
+      name: "Kawan (Prototype)",
+      summary: "A community-focused mobile app concept; demo video only.",
+      tags: ["Mobile", "Analytics", "Machine Learning"],
+      links: [
+        { label: "YouTube", href: "https://youtu.be/39pa-ljV_nU?si=GVuUw38klntyMyzz", type: "video" },
+      ],
+      iconUrl: "https://img.youtube.com/vi/39pa-ljV_nU/hqdefault.jpg",
+    },
   ];
 
   const badge = (text: string) => (
@@ -32,9 +41,10 @@ export default function AssociatedProducts() {
     </span>
   );
 
-  const actionClass = (type: "ios" | "android") => {
+  const actionClass = (type: "ios" | "android" | "video") => {
     if (type === "ios") return "bg-black text-white hover:bg-zinc-800 focus-visible:ring-black";
-    return "bg-green-600 text-white hover:bg-green-700 focus-visible:ring-green-600";
+    if (type === "android") return "bg-green-600 text-white hover:bg-green-700 focus-visible:ring-green-600";
+    return "bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-600";
   };
 
   return (
@@ -95,9 +105,9 @@ export default function AssociatedProducts() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`${p.name} on ${l.label}`}
-                    className={`inline-flex items-center rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${actionClass(l.type as "ios" | "android")}`}
+                    className={`inline-flex items-center gap-2 px-3 py-2 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${actionClass(l.type as "ios" | "android" | "video")}`}
                   >
-                    {l.type === "ios" ? (
+                    {l.type === "ios" && (
                       <Image
                         src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83"
                         alt="Download on the App Store"
@@ -106,7 +116,8 @@ export default function AssociatedProducts() {
                         className="h-10 w-auto"
                         unoptimized
                       />
-                    ) : (
+                    )}
+                    {l.type === "android" && (
                       <Image
                         src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
                         alt="Get it on Google Play"
@@ -115,6 +126,14 @@ export default function AssociatedProducts() {
                         className="h-10 w-auto"
                         unoptimized
                       />
+                    )}
+                    {l.type === "video" && (
+                      <span className="inline-flex items-center gap-2">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                          <path d="M23.5 6.2c-.3-1.2-1.3-2.1-2.5-2.3C18.6 3.5 12 3.5 12 3.5s-6.6 0-9 .4C1.8 4.1.8 5 0.5 6.2 0.1 8 0.1 12 0.1 12s0 4 .4 5.8c.3 1.2 1.3 2.1 2.5 2.3 2.4.4 9 .4 9 .4s6.6 0 9-.4c1.2-.2 2.2-1.1 2.5-2.3.4-1.8.4-5.8.4-5.8s0-4-.4-5.8zM9.7 15.5V8.5l6.4 3.5-6.4 3.5z" />
+                        </svg>
+                        <span className="font-medium">Watch Demo</span>
+                      </span>
                     )}
                   </a>
                 ))}

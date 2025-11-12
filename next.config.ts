@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
         hostname: "tools.applemediaservices.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "img.youtube.com",
+        pathname: "/**",
+      },
     ],
   },
 };
