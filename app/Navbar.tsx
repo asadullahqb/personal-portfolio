@@ -23,41 +23,49 @@ export default function Navbar() {
     }
   }, []);
 
-  // Scroll event to detect current section and update URL
+  // Observe sections to update active nav and URL without scroll jank
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollPos = window.scrollY + window.innerHeight / 2;
+    const sections = navItems
+      .map((item) => document.getElementById(item.id))
+      .filter(Boolean) as HTMLElement[];
 
-      for (const item of navItems) {
-        const section = document.getElementById(item.id);
-        if (section) {
-          const top = section.offsetTop;
-          const bottom = top + section.offsetHeight;
-          if (scrollPos >= top && scrollPos < bottom) {
-            setActive(item.id);
-            setTimeout(() => {
-              window.history.replaceState(
-                null,
-                "",
-                item.id === "home" ? "/" : `/#${item.id}`
-              );
-            }, 0);
-            break;
-          }
+    if (sections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // Find the entry with the largest intersection ratio
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => (b.intersectionRatio || 0) - (a.intersectionRatio || 0))[0];
+
+        if (visible && visible.target.id && visible.target.id !== active) {
+          const id = visible.target.id;
+          setActive(id);
+          // Update URL to reflect current section
+          window.history.replaceState(
+            null,
+            "",
+            id === "home" ? "/" : `/#${id}`
+          );
         }
+      },
+      {
+        // Account for fixed navbar height and focus on mid-viewport
+        root: null,
+        rootMargin: "-32px 0px -40% 0px",
+        threshold: [0.25, 0.5, 0.75],
       }
-    };
+    );
 
-    window.addEventListener("scroll", handleScroll);
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    sections.forEach((s) => observer.observe(s));
+    return () => observer.disconnect();
+  }, [active]);
 
   // Smooth scroll function and update URL
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
     if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
       setActive(id);
       setMenuOpen(false);
       setTimeout(() => {

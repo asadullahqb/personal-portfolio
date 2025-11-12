@@ -17,3 +17,13 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Global smooth scrolling for anchor jumps */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Ensure sections account for fixed navbar height when scrolled into view */
+main > section {
+  scroll-margin-top: 4rem; /* Navbar height (h-16) */
+}
