@@ -7,48 +7,37 @@ import Tools from "./tools/page";
 import AssociatedProducts from "./associatedProducts/page";
 
 // Determine backend URL based on environment (dev or prod)
-// Now respects the 'env' function argument instead of only using runtime detection
 function getBackendBaseUrl(env: 'development' | 'production' = 'development') {
-  // 1. Check explicitly provided env
   if (env === 'production') {
-    // Prefer environment variables when available
     if (typeof window !== "undefined" && (window as any).__NEXT_PUBLIC_BACKEND_URL__) {
       return (window as any).__NEXT_PUBLIC_BACKEND_URL__;
     }
     if (process.env.NEXT_PUBLIC_BACKEND_URL) {
       return process.env.NEXT_PUBLIC_BACKEND_URL;
     }
-    // Fallback: recognize typical prod domain
     if (typeof window !== "undefined" && window.location && window.location.hostname.includes("your-production-domain.com")) {
       return "https://personal-portfolio-backend-nm7v.onrender.com";
     }
-    // Default to production backend
     return "https://personal-portfolio-backend-nm7v.onrender.com";
   } else {
-    // env == 'development'
-    // Allow override for local development as well
     if (typeof window !== "undefined" && (window as any).__NEXT_PUBLIC_BACKEND_URL__) {
       return (window as any).__NEXT_PUBLIC_BACKEND_URL__;
     }
     if (process.env.NEXT_PUBLIC_BACKEND_URL) {
       return process.env.NEXT_PUBLIC_BACKEND_URL;
     }
-    // Default to localhost for dev
     return "http://localhost:8000";
   }
 }
 
 function getUserIP(): string | undefined {
-  // Fix: safely extract __NEXT_PUBLIC_USER_IP__ if it's defined globally
-  // TypeScript fix: cast to any so that window['__NEXT_PUBLIC_USER_IP__'] doesn't complain
   if (typeof window !== "undefined" && (window as any).__NEXT_PUBLIC_USER_IP__) {
     return (window as any).__NEXT_PUBLIC_USER_IP__;
   }
   return undefined;
 }
 
-function TypewriterWelcome() {
-  // Remove hardcoded FULL_TEXT, fetch from backend instead
+function TypewriterWelcome({ onContinue }: { onContinue?: () => void }) {
   const [fullText, setFullText] = useState<string | null>(null);
   const ANIMATION_DELAY = 120;
   const PAUSE_AFTER_TYPE = 600;
@@ -58,7 +47,6 @@ function TypewriterWelcome() {
   const [faded, setFaded] = useState(false);
   const [done, setDone] = useState(false);
 
-  // Fetch FULL_TEXT from FastAPI backend
   useEffect(() => {
     async function fetchFullText() {
       try {
@@ -69,7 +57,6 @@ function TypewriterWelcome() {
             "Content-Type": "application/json",
             "Accept": "application/json"
           },
-          // Fix: safely retrieve user IP or pass undefined if not available
           body: JSON.stringify({
             ip: getUserIP()
           })
@@ -78,18 +65,13 @@ function TypewriterWelcome() {
           throw new Error(`Network response was not ok (${response.status})`);
         }
         const data = await response.json();
-        console.log(data);
-        // Assume API returns 
         setFullText(data.message ?? "Welcome.");
       } catch (err) {
-        // Fallback on error
         setFullText("Welcome.");
       }
     }
     fetchFullText();
   }, []);
-
-
 
   useEffect(() => {
     if (typeof fullText !== "string") return; // Wait for API
@@ -134,9 +116,9 @@ function TypewriterWelcome() {
     );
   }
 
-  // Use flexbox to center both vertically and horizontally and ensure max available height on all screen sizes
+  // Expand welcome to fill viewport, centered both axis
   return (
-    <div className="w-full flex items-center justify-center">
+    <div className="w-full h-full flex flex-col items-center justify-center">
       <h1
         className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-fuchsia-600 transition-opacity duration-500 text-center"
         style={{
@@ -154,35 +136,79 @@ function TypewriterWelcome() {
           }}
         />
       </h1>
+      {done && (
+        <button
+          onClick={onContinue}
+          className="mt-10 px-8 py-3 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-fuchsia-600 text-white font-semibold shadow-md hover:scale-105 transition transform text-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          aria-label="Continue to Tools"
+        >
+          Continue
+        </button>
+      )}
     </div>
   );
 }
 
 export default function HomePage() {
+  // For scroll anchor: handle perfect scroll to tools section
+  const toolsRef = useRef<HTMLDivElement>(null);
+
+  // Detect fragment (hash) in URL for #tools navigation from navbar
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    // Listen for hashchange events for smooth scroll
+    const handleHashChange = () => {
+      if (window.location.hash === "#tools" && toolsRef.current) {
+        // Using scrollIntoView with instant/behavior smooth and align to top
+        toolsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    };
+    // On initial load, if hash is set already scroll
+    if (window.location.hash === "#tools" && toolsRef.current) {
+      toolsRef.current.scrollIntoView({ behavior: "instant", block: "start" });
+    }
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
+
+  // Optional: helper for the continue button (arrow, for keyboard, etc)
+  const handleContinue = () => {
+    if (toolsRef.current) {
+      toolsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      // Also update hash in URL for consistency (and nav highlight)
+      if (typeof window !== "undefined" && window.location.hash !== "#tools") {
+        history.replaceState(null, "", "#tools");
+      }
+    }
+  };
+
   return (
-    <main>
+    <main className="relative w-full h-full">
       <section
         id="home"
-        className="w-full flex items-center justify-center px-4 sm:px-6 md:px-8 font-sans pt-16"
-        style={{ minHeight: "calc(100vh - 4rem)" }}
+        className="flex items-center justify-center px-4 sm:px-6 md:px-8 font-sans"
+        style={{
+          minHeight: "100vh",
+          height: "100vh",  // Ensures the welcome covers whole page
+        }}
       >
-        <div className="max-w-6xl mx-auto w-full text-center">
-          <TypewriterWelcome />
+        <div className="max-w-6xl mx-auto w-full h-full flex flex-col items-center justify-center text-center">
+          <TypewriterWelcome onContinue={handleContinue} />
         </div>
       </section>
 
-      <section id="tools">
+      {/* This div is the anchor for scrolling to Tools */}
+      <div ref={toolsRef} id="tools" tabIndex={-1} />
+
+      <section>
         <Tools />
       </section>
-
       <section id="associatedProducts">
         <AssociatedProducts />
       </section>
-
       <section id="publications">
         <Publications />
       </section>
-
       <section id="mentorship">
         <Mentorship />
       </section>
