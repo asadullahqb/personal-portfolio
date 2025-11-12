@@ -4,7 +4,7 @@ import UnderConstruction from "../components/UnderConstruction";
 
 export default function Tools() {
   return (
-    <section className="w-full py-24 px-4 sm:px-6 md:px-8 font-sans">
+    <section className="w-full py-12 px-4 sm:px-6 md:px-8 font-sans">
       <div className="max-w-6xl mx-auto">
         <SectionHeading
           title="Tools"
