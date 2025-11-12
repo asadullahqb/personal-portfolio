@@ -130,38 +130,30 @@ function TypewriterWelcome() {
   // If loading, show nothing or a spinner (optional)
   if (fullText === null) {
     return (
-      <div className="w-full h-screen flex items-center justify-center bg-none">
-        <div className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-400">
-          ...
-        </div>
-      </div>
+      <div className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-400 text-center">...</div>
     );
   }
 
   // Use flexbox to center both vertically and horizontally and ensure max available height on all screen sizes
   return (
-    <div className="w-full h-screen flex items-center justify-center bg-none overflow-hidden">
-      <div
-        className="w-full max-w-4xl px-4 sm:px-6 md:px-8 flex flex-col items-center justify-center text-center"
+    <div className="w-full flex items-center justify-center">
+      <h1
+        className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-fuchsia-600 transition-opacity duration-500 text-center"
+        style={{
+          opacity: faded ? 0 : 1,
+          transition: `opacity ${FADE_DURATION}ms`,
+        }}
+        aria-label="Welcome"
       >
-        <h1
-          className="text-4xl sm:text-5xl md:text-6xl font-bold transition-opacity duration-500 inline-block"
+        {typed}
+        <span
+          className={`inline-block w-1 sm:w-2 h-8 sm:h-12 ml-1 ${!done ? 'animate-pulse' : 'opacity-0'}`}
           style={{
-            opacity: faded ? 0 : 1,
-            transition: `opacity ${FADE_DURATION}ms`,
+            backgroundColor: "#222",
+            opacity: done ? 0 : 0.6,
           }}
-          aria-label="Welcome"
-        >
-          {typed}
-          <span
-            className={`inline-block w-1 sm:w-2 h-8 sm:h-12 ml-1 ${!done ? 'animate-pulse' : 'opacity-0'}`}
-            style={{
-              backgroundColor: "#222",
-              opacity: done ? 0 : 0.6,
-            }}
-          />
-        </h1>
-      </div>
+        />
+      </h1>
     </div>
   );
 }
@@ -171,11 +163,12 @@ export default function HomePage() {
     <main>
       <section
         id="home"
-        className="min-h-screen w-full flex items-center justify-center bg-gray-50 p-0 m-0"
-        style={{ position: "relative" }}
+        className="w-full flex items-center justify-center px-4 sm:px-6 md:px-8 font-sans pt-16"
+        style={{ minHeight: "calc(100vh - 4rem)" }}
       >
-        {/* TypewriterWelcome now fully centers itself both vertically/horizontally */}
-        <TypewriterWelcome />
+        <div className="max-w-6xl mx-auto w-full text-center">
+          <TypewriterWelcome />
+        </div>
       </section>
 
       <section id="tools">
