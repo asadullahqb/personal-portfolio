@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import { useRef } from "react";
 
 export default function AssociatedProducts() {
 
@@ -47,6 +48,10 @@ export default function AssociatedProducts() {
     return "bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-600";
   };
 
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const scrollBy = (delta: number) =>
+    sliderRef.current?.scrollBy({ left: delta, behavior: "smooth" });
+
   return (
     <section className="w-full py-24 px-4 sm:px-6 md:px-8 font-sans">
       <div className="max-w-6xl mx-auto">
@@ -60,8 +65,114 @@ export default function AssociatedProducts() {
           </p>
         </div>
 
-        {/* Cards grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Mobile slider */}
+        <div className="md:hidden">
+          <div
+            ref={sliderRef}
+            className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-2"
+          >
+            {products.map((p) => (
+              <div
+                key={p.name}
+                className="snap-start min-w-[85%] group relative rounded-2xl bg-white/80 backdrop-blur ring-1 ring-zinc-200 hover:ring-blue-400 hover:shadow-xl transition duration-300 p-6 flex flex-col"
+              >
+                {/* Icon / Initials */}
+                <div className="flex items-center gap-4">
+                  <div className="h-12 w-12 rounded-xl overflow-hidden ring-1 ring-zinc-200 bg-white flex items-center justify-center">
+                    {p.iconUrl ? (
+                      <Image
+                        src={p.iconUrl}
+                        alt={`${p.name} app icon`}
+                        width={48}
+                        height={48}
+                        className="h-12 w-12 object-cover"
+                        unoptimized
+                      />
+                    ) : (
+                      <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600" />
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-zinc-900">{p.name}</h3>
+                    <p className="text-sm text-zinc-600">{p.summary}</p>
+                  </div>
+                </div>
+
+                {/* Badges */}
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {p.tags.map((t) => (
+                    <span key={t}>{badge(t)}</span>
+                  ))}
+                </div>
+
+                {/* Actions */}
+                <div className="mt-6 flex flex-wrap gap-3">
+                  {p.links.map((l) => (
+                    <a
+                      key={l.href}
+                      href={l.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${p.name} on ${l.label}`}
+                      className={`inline-flex items-center gap-2 px-3 py-2 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${actionClass(l.type as "ios" | "android" | "video")}`}
+                    >
+                      {l.type === "ios" && (
+                        <Image
+                          src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83"
+                          alt="Download on the App Store"
+                          width={150}
+                          height={50}
+                          className="h-10 w-auto"
+                          unoptimized
+                        />
+                      )}
+                      {l.type === "android" && (
+                        <Image
+                          src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+                          alt="Get it on Google Play"
+                          width={150}
+                          height={58}
+                          className="h-10 w-auto"
+                          unoptimized
+                        />
+                      )}
+                      {l.type === "video" && (
+                        <span className="inline-flex items-center gap-2">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path d="M23.5 6.2c-.3-1.2-1.3-2.1-2.5-2.3C18.6 3.5 12 3.5 12 3.5s-6.6 0-9 .4C1.8 4.1.8 5 0.5 6.2 0.1 8 0.1 12 0.1 12s0 4 .4 5.8c.3 1.2 1.3 2.1 2.5 2.3 2.4.4 9 .4 9 .4s6.6 0 9-.4c1.2-.2 2.2-1.1 2.5-2.3.4-1.8.4-5.8.4-5.8s0-4-.4-5.8zM9.7 15.5V8.5l6.4 3.5-6.4 3.5z" />
+                          </svg>
+                          <span className="font-medium">Watch Demo</span>
+                        </span>
+                      )}
+                    </a>
+                  ))}
+                </div>
+
+                {/* Decorative accent */}
+                <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-[0.06] transition bg-gradient-to-br from-blue-500 via-indigo-500 to-fuchsia-500" />
+              </div>
+            ))}
+          </div>
+          <div className="flex justify-between mt-3">
+            <button
+              onClick={() => scrollBy(-320)}
+              className="inline-flex items-center px-3 py-2 rounded-md bg-zinc-100 text-zinc-700 hover:bg-zinc-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-400"
+              aria-label="Scroll products left"
+            >
+              ◀ Prev
+            </button>
+            <button
+              onClick={() => scrollBy(320)}
+              className="inline-flex items-center px-3 py-2 rounded-md bg-zinc-100 text-zinc-700 hover:bg-zinc-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-400"
+              aria-label="Scroll products right"
+            >
+              Next ▶
+            </button>
+          </div>
+        </div>
+
+        {/* Desktop/tablet grid */}
+        <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map((p) => (
             <div
               key={p.name}
