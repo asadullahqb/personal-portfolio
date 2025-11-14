@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Medical Scribe Assistant</title>
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="header">
+    <h1>Medical Scribe Assistant</h1>
+    <button id="settingsBtn" class="btn">Settings</button>
+  </header>
+  <main class="container">
+    <div id="status" class="status">Ready</div>
+
+    <section class="controls">
+      <div class="control-group">
+        <button id="startBtn" class="btn primary">Start Recording</button>
+        <button id="stopBtn" class="btn">Stop Recording</button>
+      </div>
+      <div class="control-group">
+        <input id="audioFileInput" type="file" accept="audio/*" />
+        <button id="uploadBtn" class="btn">Upload Audio</button>
+        <button id="attributeBtn" class="btn">Attribute Speakers</button>
+      </div>
+      <div class="control-group">
+        <button id="summarizeBtn" class="btn primary">Summarize</button>
+        <button id="copyNoteBtn" class="btn">Copy</button>
+        <button id="downloadNoteBtn" class="btn">Download .md</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Transcript</h2>
+      <textarea id="transcript" class="text" rows="8" placeholder="Live transcript"></textarea>
+    </section>
+
+    <section class="panel">
+      <h2>Dialogue</h2>
+      <textarea id="dialogue" class="text" rows="8" placeholder="Attributed dialogue"></textarea>
+    </section>
+
+    <section class="panel">
+      <h2>Note</h2>
+      <textarea id="note" class="text" rows="12" placeholder="Summarized clinical note"></textarea>
+    </section>
+  </main>
+
+  <dialog id="settingsDialog" class="dialog">
+    <div class="dialog-content">
+      <h3>Settings</h3>
+      <label>
+        API Base
+        <input id="apiBaseInput" type="text" placeholder="http://localhost:8787" />
+      </label>
+      <label>
+        Language
+        <input id="langInput" type="text" placeholder="en-US" />
+      </label>
+      <div class="dialog-actions">
+        <button id="saveSettingsBtn" class="btn primary">Save</button>
+        <button id="closeSettingsBtn" class="btn">Close</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="./main.js" type="module"></script>
+</body>
+</html>

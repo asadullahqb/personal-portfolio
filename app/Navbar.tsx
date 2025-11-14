@@ -71,18 +71,23 @@ export default function Navbar() {
 
   // Smooth scroll function and update URL
   const scrollToSection = (id: string) => {
+    const pathname = typeof window !== "undefined" ? window.location.pathname : "/";
+    if (pathname !== "/") {
+      setMenuOpen(false);
+      setActive(id);
+      window.location.assign(id === "home" ? "/" : `/#${id}`);
+      return;
+    }
     const el = document.getElementById(id);
     if (el) {
       el.scrollIntoView({ behavior: "smooth", block: "start" });
       setActive(id);
       setMenuOpen(false);
       setTimeout(() => {
-        window.history.pushState(
-          null,
-          "",
-          id === "home" ? "/" : `/#${id}`
-        );
+        window.history.pushState(null, "", id === "home" ? "/" : `/#${id}`);
       }, 0);
+    } else {
+      window.location.assign(id === "home" ? "/" : `/#${id}`);
     }
   };
 
@@ -106,17 +111,21 @@ export default function Navbar() {
         </div>
         {/* Desktop nav */}
         <div className="hidden md:flex space-x-4 lg:space-x-6">
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => scrollToSection(item.id)}
-              className={`text-sm lg:text-lg font-medium hover:text-blue-600 transition ${
-                active === item.id ? "text-blue-600" : "text-gray-700"
-              }`}
-            >
-              {item.name}
-            </button>
-          ))}
+          {navItems.map((item) => {
+            const href = item.id === "home" ? "/" : `/#${item.id}`;
+            return (
+              <a
+                key={item.id}
+                href={href}
+                onClick={(e) => { e.preventDefault(); scrollToSection(item.id); }}
+                className={`text-sm lg:text-lg font-medium hover:text-blue-600 transition ${
+                  active === item.id ? "text-blue-600" : "text-gray-700"
+                }`}
+              >
+                {item.name}
+              </a>
+            );
+          })}
         </div>
         {/* Hamburger (mobile) */}
         <div className="md:hidden flex items-center">
@@ -149,17 +158,21 @@ export default function Navbar() {
       {menuOpen && (
         <div className="md:hidden px-4 pt-2 pb-4 bg-white shadow animate-fade-in-down">
           <div className="flex flex-col space-y-1">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className={`text-base py-2 text-left font-medium hover:text-blue-600 transition ${
-                  active === item.id ? "text-blue-600" : "text-gray-700"
-                }`}
-              >
-                {item.name}
-              </button>
-            ))}
+            {navItems.map((item) => {
+              const href = item.id === "home" ? "/" : `/#${item.id}`;
+              return (
+                <a
+                  key={item.id}
+                  href={href}
+                  onClick={(e) => { e.preventDefault(); scrollToSection(item.id); }}
+                  className={`text-base py-2 text-left font-medium hover:text-blue-600 transition ${
+                    active === item.id ? "text-blue-600" : "text-gray-700"
+                  }`}
+                >
+                  {item.name}
+                </a>
+              );
+            })}
           </div>
         </div>
       )}

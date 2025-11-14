@@ -188,6 +188,22 @@ export default function HomePage() {
     }
   };
 
+  useEffect(() => {
+    const h = typeof window !== "undefined" ? window.location.hash.slice(1) : "";
+    if (!h) return;
+    let attempts = 0;
+    const tryScroll = () => {
+      const el = document.getElementById(h);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else if (attempts < 20) {
+        attempts++;
+        setTimeout(tryScroll, 50);
+      }
+    };
+    tryScroll();
+  }, []);
+
   return (
     <main className="relative w-full h-full">
       <section

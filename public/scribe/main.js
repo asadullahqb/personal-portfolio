@@ -1,0 +1,161 @@
+const cfgKey = "scribe_config";
+const storage = {
+  get: (k, d) => {
+    try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; }
+  },
+  set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+};
+
+let config = storage.get(cfgKey, { apiBase: "http://localhost:8787", lang: "en-US" });
+
+const els = {
+  status: document.getElementById("status"),
+  startBtn: document.getElementById("startBtn"),
+  stopBtn: document.getElementById("stopBtn"),
+  audioFileInput: document.getElementById("audioFileInput"),
+  uploadBtn: document.getElementById("uploadBtn"),
+  attributeBtn: document.getElementById("attributeBtn"),
+  summarizeBtn: document.getElementById("summarizeBtn"),
+  transcript: document.getElementById("transcript"),
+  dialogue: document.getElementById("dialogue"),
+  note: document.getElementById("note"),
+  copyNoteBtn: document.getElementById("copyNoteBtn"),
+  downloadNoteBtn: document.getElementById("downloadNoteBtn"),
+  settingsBtn: document.getElementById("settingsBtn"),
+  settingsDialog: document.getElementById("settingsDialog"),
+  apiBaseInput: document.getElementById("apiBaseInput"),
+  langInput: document.getElementById("langInput"),
+  saveSettingsBtn: document.getElementById("saveSettingsBtn"),
+  closeSettingsBtn: document.getElementById("closeSettingsBtn"),
+};
+
+let recognition;
+let recording = false;
+let currentFileId = null;
+
+function setStatus(t) { els.status.textContent = t; }
+
+function initASR() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { setStatus("ASR unavailable"); return; }
+  recognition = new SR();
+  recognition.lang = config.lang || "en-US";
+  recognition.interimResults = true;
+  recognition.continuous = true;
+  recognition.onstart = () => setStatus("Recording");
+  recognition.onerror = () => setStatus("ASR error");
+  recognition.onend = () => { recording = false; setStatus("Stopped"); };
+  recognition.onresult = (e) => {
+    let s = "";
+    for (let i = e.resultIndex; i < e.results.length; i++) s += e.results[i][0].transcript + " ";
+    els.transcript.value = (els.transcript.value + " " + s).trim();
+  };
+}
+
+function startRecording() {
+  if (!recognition) return;
+  if (recording) return;
+  recording = true;
+  recognition.start();
+}
+
+function stopRecording() {
+  if (!recognition) return;
+  recognition.stop();
+}
+
+async function uploadAudioFile() {
+  const file = els.audioFileInput.files && els.audioFileInput.files[0];
+  if (!file) { setStatus("No file selected"); return; }
+  setStatus("Upload init");
+  const initRes = await fetch(config.apiBase + "/upload_init", { method: "POST" });
+  if (!initRes.ok) { setStatus("Init failed"); return; }
+  const initJson = await initRes.json();
+  const uploadId = initJson.uploadId;
+  const chunkSize = 1024 * 1024;
+  const total = Math.ceil(file.size / chunkSize);
+  for (let i = 0; i < total; i++) {
+    const start = i * chunkSize;
+    const end = Math.min(file.size, start + chunkSize);
+    const chunk = file.slice(start, end);
+    setStatus("Uploading chunk " + (i + 1) + "/" + total);
+    const u = new URL(config.apiBase + "/upload_chunk");
+    u.searchParams.set("uploadId", uploadId);
+    u.searchParams.set("index", String(i));
+    const cRes = await fetch(u.toString(), { method: "POST", body: chunk });
+    if (!cRes.ok) { setStatus("Chunk failed"); return; }
+  }
+  setStatus("Finalizing");
+  const finRes = await fetch(config.apiBase + "/upload_finalize", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ uploadId }) });
+  if (!finRes.ok) { setStatus("Finalize failed"); return; }
+  const finJson = await finRes.json();
+  currentFileId = finJson.fileId || null;
+  setStatus("Upload complete");
+}
+
+async function attributeSpeakers() {
+  if (!currentFileId) { setStatus("No file uploaded"); return; }
+  setStatus("Attributing");
+  const res = await fetch(config.apiBase + "/attribute", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ fileId: currentFileId }) });
+  if (!res.ok) { setStatus("Attribute failed"); return; }
+  const json = await res.json();
+  const d = json.dialogue;
+  els.dialogue.value = typeof d === "string" ? d : JSON.stringify(d, null, 2);
+  setStatus("Attributed");
+}
+
+async function summarize() {
+  setStatus("Summarizing");
+  const payload = { transcript: els.transcript.value, dialogue: els.dialogue.value };
+  const res = await fetch(config.apiBase + "/summarize", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+  if (!res.ok) { setStatus("Summarize failed"); return; }
+  const json = await res.json();
+  const n = json.note;
+  els.note.value = typeof n === "string" ? n : JSON.stringify(n, null, 2);
+  setStatus("Summarized");
+}
+
+function copyNote() {
+  const v = els.note.value || "";
+  navigator.clipboard.writeText(v).then(() => setStatus("Copied"));
+}
+
+function downloadNote() {
+  const v = els.note.value || "";
+  const blob = new Blob([v], { type: "text/markdown" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "note.md"; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+}
+
+function openSettings() {
+  els.apiBaseInput.value = config.apiBase || "";
+  els.langInput.value = config.lang || "en-US";
+  if (typeof els.settingsDialog.showModal === "function") els.settingsDialog.showModal();
+}
+
+function closeSettings() { els.settingsDialog.close(); }
+
+function saveSettings() {
+  config = { apiBase: els.apiBaseInput.value.trim() || config.apiBase, lang: els.langInput.value.trim() || config.lang };
+  storage.set(cfgKey, config);
+  if (recognition) recognition.lang = config.lang;
+  closeSettings();
+}
+
+els.startBtn.addEventListener("click", startRecording);
+els.stopBtn.addEventListener("click", stopRecording);
+els.uploadBtn.addEventListener("click", uploadAudioFile);
+els.attributeBtn.addEventListener("click", attributeSpeakers);
+els.summarizeBtn.addEventListener("click", summarize);
+els.copyNoteBtn.addEventListener("click", copyNote);
+els.downloadNoteBtn.addEventListener("click", downloadNote);
+els.settingsBtn.addEventListener("click", openSettings);
+els.closeSettingsBtn.addEventListener("click", closeSettings);
+els.saveSettingsBtn.addEventListener("click", saveSettings);
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./sw.js").catch(() => {});
+}
+
+initASR();

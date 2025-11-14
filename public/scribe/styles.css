@@ -1,0 +1,21 @@
+:root { --bg: #0b0f1a; --panel: #121725; --text: #e6e6e6; --muted: #9aa0a6; --primary: #5b7cfa; --border: #2a3242; }
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: var(--bg); color: var(--text); }
+.header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+.container { max-width: 960px; margin: 0 auto; padding: 20px; }
+.status { margin-bottom: 16px; padding: 10px 12px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; font-size: 14px; color: var(--muted); }
+.controls { display: grid; gap: 12px; grid-template-columns: 1fr; margin-bottom: 16px; }
+.control-group { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.panel { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 16px; }
+.panel h2 { margin: 0 0 8px 0; font-size: 16px; color: var(--muted); }
+.text { width: 100%; background: #0c1120; color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 10px; resize: vertical; }
+.btn { appearance: none; border: 1px solid var(--border); background: #182033; color: var(--text); padding: 8px 12px; border-radius: 8px; font-size: 14px; cursor: pointer; }
+.btn.primary { background: var(--primary); border-color: #3f58d6; }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.dialog { border: none; padding: 0; border-radius: 12px; }
+.dialog-content { background: var(--panel); border: 1px solid var(--border); padding: 16px; border-radius: 12px; min-width: 320px; }
+.dialog-content h3 { margin: 0 0 12px; }
+.dialog-content label { display: grid; gap: 6px; margin-bottom: 10px; }
+.dialog-content input { width: 100%; background: #0c1120; color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 8px; }
+.dialog-actions { display: flex; gap: 8px; justify-content: flex-end; }

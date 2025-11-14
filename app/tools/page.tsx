@@ -1,9 +1,23 @@
 import Card from "@/app/components/ui/Card";
 import SectionHeading from "@/app/components/ui/Heading";
-import UnderConstruction from "../components/UnderConstruction";
 import Button from "@/app/components/ui/Button";
 
 export default function Tools() {
+  const items = [
+    {
+      title: "Medical Scribe Assistant",
+      desc: "Record, attribute speakers, and generate clinical notes.",
+      href: "/tools/scribe",
+      cta: "Open",
+    },
+    {
+      title: "Coming Soon",
+      desc: "More AI-powered tools will appear here shortly.",
+      href: undefined,
+      cta: "Coming Soon",
+    },
+  ];
+
   return (
     <section
       id="tools"
@@ -16,21 +30,27 @@ export default function Tools() {
           subtitle="A growing set of AI-powered utilities."
           className="mb-0"
         />
-        <Card className="mt-8 flex-1 min-h-0 flex items-center justify-center">
-          <UnderConstruction title="Tools are being built." />
-        </Card>
-      </div>
-      <div className="absolute bottom-6 right-6 flex items-center gap-3 z-10">
-        <Button href="#tools" className="px-0 py-0 w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-fuchsia-600 text-white shadow-md hover:scale-105 transition transform" ariaLabel="Scroll up">
-          <svg className="text-white" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M12 7.5l6 6-1.4 1.4L12 10.3l-4.6 4.6L6 13.5l6-6z" />
-          </svg>
-        </Button>
-        <Button href="#associatedProducts" className="px-0 py-0 w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-fuchsia-600 text-white shadow-md hover:scale-105 transition transform" ariaLabel="Scroll down">
-          <svg className="text-white" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M12 16.5l-6-6 1.4-1.4L12 13.7l4.6-4.6 1.4 1.4-6 6z" />
-          </svg>
-        </Button>
+        <div className="mt-8 flex-1 min-h-0">
+          <div className="flex gap-4 overflow-x-auto pb-4 snap-x">
+            {items.map((it) => (
+              <Card key={it.title} className="min-w-[280px] w-[340px] snap-start hover:scale-[1.02] active:scale-[1.04] transition-transform">
+                <div className="flex flex-col gap-3">
+                  <h3 className="text-lg font-semibold">{it.title}</h3>
+                  <p className="text-sm text-zinc-500">{it.desc}</p>
+                  {it.href ? (
+                    <Button href={it.href} variant="primary" ariaLabel={`Open ${it.title}`} className="transition-transform hover:scale-105 active:scale-110">
+                      {it.cta}
+                    </Button>
+                  ) : (
+                    <Button variant="neutral" ariaLabel="Coming soon" className="opacity-80 cursor-not-allowed">
+                      {it.cta}
+                    </Button>
+                  )}
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
