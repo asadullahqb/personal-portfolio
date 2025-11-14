@@ -43,12 +43,6 @@ export default function AssociatedProducts() {
   const badge = (text: string) => <Badge>{text}</Badge>;
 
   const sliderRef = useRef<HTMLDivElement>(null);
-  const scrollByCard = (direction: "next" | "prev") => {
-    const el = sliderRef.current;
-    if (!el) return;
-    const delta = Math.round(el.clientWidth * 0.9) * (direction === "next" ? 1 : -1);
-    el.scrollBy({ left: delta, behavior: "smooth" });
-  };
 
   return (
     <section
@@ -118,18 +112,6 @@ export default function AssociatedProducts() {
                 </Card>
               </div>
             ))}
-        </div>
-        <div className="flex justify-between mt-3">
-          <Button onClick={() => scrollByCard("prev")} ariaLabel="Scroll left">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M8.5 12l6 6-1.4 1.4L5.7 12l7.4-7.4L14.5 6l-6 6z" />
-            </svg>
-          </Button>
-          <Button onClick={() => scrollByCard("next")} ariaLabel="Scroll right">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M15.5 12l-6-6 1.4-1.4 7.4 7.4-7.4 7.4L9.5 18l6-6z" />
-            </svg>
-          </Button>
         </div>
         </div>
 
