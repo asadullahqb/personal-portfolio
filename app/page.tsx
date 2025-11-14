@@ -171,8 +171,8 @@ export default function HomePage() {
         id="home"
         className="flex items-center justify-center px-4 sm:px-6 md:px-8 font-sans snap-start"
         style={{
-          minHeight: "100vh",
-          height: "100vh",  // Ensures the welcome covers whole page
+          minHeight: "100dvh",
+          height: "100dvh",
         }}
       >
         <div className="max-w-6xl mx-auto w-full h-full flex flex-col items-center justify-center text-center">

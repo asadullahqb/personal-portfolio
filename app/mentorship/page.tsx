@@ -7,15 +7,16 @@ export default function Mentorship() {
   return (
     <section
       id="mentorship"
-      className="relative w-full min-h-screen h-screen px-4 sm:px-6 md:px-8 pb-16 font-sans snap-start"
+      className="relative w-full min-h-[100dvh] h-[100dvh] px-4 sm:px-6 md:px-8 pb-0 font-sans snap-start"
       style={{ paddingTop: "calc(var(--navbar-height) + 36px)" }}
     >
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto h-full flex flex-col pb-24">
         <SectionHeading
           title="Mentorship"
           subtitle="Advice, programs, and guidance for aspiring data scientists."
+          className="mb-0"
         />
-        <Card className="flex items-center justify-center">
+        <Card className="mt-8 flex-1 min-h-0 flex items-center justify-center">
           <UnderConstruction title="Mentorship content is coming soon." />
         </Card>
       </div>

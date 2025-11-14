@@ -53,18 +53,19 @@ export default function AssociatedProducts() {
   return (
     <section
       id="associatedProducts"
-      className="relative w-full min-h-screen h-screen px-4 sm:px-6 md:px-8 pb-16 font-sans snap-start"
+      className="relative w-full min-h-[100dvh] h-[100dvh] px-4 sm:px-6 md:px-8 pb-0 font-sans snap-start"
       style={{ paddingTop: "calc(var(--navbar-height) + 36px)" }}
     >
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto h-full flex flex-col pb-24">
         {/* Heading */}
         <SectionHeading
           title="Products I’ve Contributed To"
           subtitle="Disclaimer: I do not own these products; I contributed to their development."
+          className="mb-0"
         />
 
         {/* Mobile slider */}
-        <div className="md:hidden">
+        <div className="md:hidden flex-1 min-h-0 mt-8">
           <div
             ref={sliderRef}
             className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-2"
@@ -133,7 +134,7 @@ export default function AssociatedProducts() {
         </div>
 
         {/* Desktop/tablet grid */}
-        <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="hidden md:grid flex-1 min-h-0 overflow-y-auto grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
           {products.map((p) => (
             <Card key={p.name}>
               {/* Icon / Initials */}
@@ -182,7 +183,7 @@ export default function AssociatedProducts() {
         </div>
 
         {/* Note */}
-        <p className="mt-8 text-xs text-zinc-500 text-center">
+        <p className="mt-4 text-xs text-zinc-500 text-center">
           Links open in a new tab.
         </p>
       </div>

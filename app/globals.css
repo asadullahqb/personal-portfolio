@@ -18,6 +18,7 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
   scroll-padding-top: calc(var(--navbar-height) + 36px);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* Global smooth scrolling for anchor jumps */
