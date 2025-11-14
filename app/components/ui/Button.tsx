@@ -31,8 +31,14 @@ export default function Button({ href, onClick, variant = "neutral", ariaLabel, 
   const classes = `inline-flex items-center gap-2 px-3 py-2 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${variantClass(variant)} ${className}`;
 
   if (href) {
+    const isExternal = /^(https?:\/\/|mailto:|tel:)/.test(href);
     return (
-      <a href={href} target="_blank" rel="noopener noreferrer" aria-label={ariaLabel} className={classes}>
+      <a
+        href={href}
+        {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+        aria-label={ariaLabel}
+        className={classes}
+      >
         {children}
       </a>
     );
@@ -79,4 +85,3 @@ export function StoreButton({ href, variant, label, productName }: { href: strin
     </Button>
   );
 }
-

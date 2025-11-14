@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 const navItems = [
   { name: "Home", id: "home" },
@@ -12,15 +13,22 @@ const navItems = [
 ];
 
 export default function Navbar() {
-  const [active, setActive] = useState("home");
+  const [active, setActive] = useState(() => {
+    const h = typeof window !== "undefined" ? window.location.hash.slice(1) : "";
+    return navItems.some((item) => item.id === h) ? h : "home";
+  });
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Initialize active state from URL hash on mount
   useEffect(() => {
-    const hash = window.location.hash.slice(1); // Remove the #
-    if (hash && navItems.some(item => item.id === hash)) {
-      setActive(hash);
-    }
+    const nav = document.querySelector("nav");
+    if (!nav) return;
+    const updateVar = () => {
+      const h = (nav as HTMLElement).offsetHeight;
+      document.documentElement.style.setProperty("--navbar-height", `${h}px`);
+    };
+    updateVar();
+    window.addEventListener("resize", updateVar);
+    return () => window.removeEventListener("resize", updateVar);
   }, []);
 
   // Observe sections to update active nav and URL without scroll jank
@@ -83,11 +91,13 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
         <div className="flex items-center space-x-3">
           <div className="w-9 h-9 sm:w-10 sm:h-10 flex-shrink-0 rounded flex items-center justify-center">
-            <img 
-              src="/lion/datascientist.svg" 
+            <Image
+              src="/lion/datascientist.svg"
               alt="Data Scientist Lion"
+              width={40}
+              height={40}
               className="w-full h-full object-contain"
-              draggable={false}
+              priority
             />
           </div>
           <span className="text-base sm:text-xl md:text-2xl font-bold">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import Publications from "./publications/page";
 import Mentorship from "./mentorship/page";
 import Tools from "./tools/page";
@@ -9,8 +9,9 @@ import AssociatedProducts from "./associatedProducts/page";
 // Determine backend URL based on environment (dev or prod)
 function getBackendBaseUrl(env: 'development' | 'production' = 'development') {
   if (env === 'production') {
-    if (typeof window !== "undefined" && (window as any).__NEXT_PUBLIC_BACKEND_URL__) {
-      return (window as any).__NEXT_PUBLIC_BACKEND_URL__;
+    const wProd = typeof window !== "undefined" ? (window as unknown as { __NEXT_PUBLIC_BACKEND_URL__?: string }) : undefined;
+    if (wProd && wProd.__NEXT_PUBLIC_BACKEND_URL__) {
+      return wProd.__NEXT_PUBLIC_BACKEND_URL__;
     }
     if (process.env.NEXT_PUBLIC_BACKEND_URL) {
       return process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -20,8 +21,9 @@ function getBackendBaseUrl(env: 'development' | 'production' = 'development') {
     }
     return "https://personal-portfolio-backend-nm7v.onrender.com";
   } else {
-    if (typeof window !== "undefined" && (window as any).__NEXT_PUBLIC_BACKEND_URL__) {
-      return (window as any).__NEXT_PUBLIC_BACKEND_URL__;
+    const wDev = typeof window !== "undefined" ? (window as unknown as { __NEXT_PUBLIC_BACKEND_URL__?: string }) : undefined;
+    if (wDev && wDev.__NEXT_PUBLIC_BACKEND_URL__) {
+      return wDev.__NEXT_PUBLIC_BACKEND_URL__;
     }
     if (process.env.NEXT_PUBLIC_BACKEND_URL) {
       return process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -31,8 +33,9 @@ function getBackendBaseUrl(env: 'development' | 'production' = 'development') {
 }
 
 function getUserIP(): string | undefined {
-  if (typeof window !== "undefined" && (window as any).__NEXT_PUBLIC_USER_IP__) {
-    return (window as any).__NEXT_PUBLIC_USER_IP__;
+  const w = typeof window !== "undefined" ? (window as unknown as { __NEXT_PUBLIC_USER_IP__?: string }) : undefined;
+  if (w && w.__NEXT_PUBLIC_USER_IP__) {
+    return w.__NEXT_PUBLIC_USER_IP__;
   }
   return undefined;
 }
@@ -66,7 +69,7 @@ function TypewriterWelcome({ onContinue }: { onContinue?: () => void }) {
         }
         const data = await response.json();
         setFullText(data.message ?? "Welcome.");
-      } catch (err) {
+      } catch {
         setFullText("Welcome.");
       }
     }
@@ -106,7 +109,6 @@ function TypewriterWelcome({ onContinue }: { onContinue?: () => void }) {
       if (pauseTimer) clearTimeout(pauseTimer);
       if (fadeTimer) clearTimeout(fadeTimer);
     };
-    // eslint-disable-next-line
   }, [done, fullText]);
 
   // If loading, show nothing or a spinner (optional)
@@ -150,32 +152,12 @@ function TypewriterWelcome({ onContinue }: { onContinue?: () => void }) {
 }
 
 export default function HomePage() {
-  // For scroll anchor: handle perfect scroll to tools section
-  const toolsRef = useRef<HTMLDivElement>(null);
-
-  // Detect fragment (hash) in URL for #tools navigation from navbar
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    // Listen for hashchange events for smooth scroll
-    const handleHashChange = () => {
-      if (window.location.hash === "#tools" && toolsRef.current) {
-        // Using scrollIntoView with instant/behavior smooth and align to top
-        toolsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    };
-    // On initial load, if hash is set already scroll
-    if (window.location.hash === "#tools" && toolsRef.current) {
-      toolsRef.current.scrollIntoView({ behavior: "instant", block: "start" });
-    }
-    window.addEventListener("hashchange", handleHashChange);
-    return () => window.removeEventListener("hashchange", handleHashChange);
-  }, []);
 
   // Optional: helper for the continue button (arrow, for keyboard, etc)
   const handleContinue = () => {
-    if (toolsRef.current) {
-      toolsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-      // Also update hash in URL for consistency (and nav highlight)
+    const el = typeof window !== "undefined" ? document.getElementById("tools") : null;
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
       if (typeof window !== "undefined" && window.location.hash !== "#tools") {
         history.replaceState(null, "", "#tools");
       }
@@ -186,7 +168,7 @@ export default function HomePage() {
     <main className="relative w-full h-full">
       <section
         id="home"
-        className="flex items-center justify-center px-4 sm:px-6 md:px-8 font-sans"
+        className="flex items-center justify-center px-4 sm:px-6 md:px-8 font-sans snap-start"
         style={{
           minHeight: "100vh",
           height: "100vh",  // Ensures the welcome covers whole page
@@ -196,22 +178,10 @@ export default function HomePage() {
           <TypewriterWelcome onContinue={handleContinue} />
         </div>
       </section>
-
-      {/* This div is the anchor for scrolling to Tools */}
-      <div ref={toolsRef} id="tools" tabIndex={-1} />
-
-      <section>
-        <Tools />
-      </section>
-      <section id="associatedProducts">
-        <AssociatedProducts />
-      </section>
-      <section id="publications">
-        <Publications />
-      </section>
-      <section id="mentorship">
-        <Mentorship />
-      </section>
+      <Tools />
+      <AssociatedProducts />
+      <Publications />
+      <Mentorship />
     </main>
   );
 }

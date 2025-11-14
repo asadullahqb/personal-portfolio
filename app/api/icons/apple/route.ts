@@ -37,8 +37,7 @@ export async function GET(request: NextRequest) {
         "Cache-Control": "public, max-age=86400, s-maxage=86400, stale-while-revalidate=86400",
       },
     });
-  } catch (err) {
+  } catch {
     return new Response("Server error", { status: 500 });
   }
 }
-

@@ -42,12 +42,6 @@ export default function AssociatedProducts() {
 
   const badge = (text: string) => <Badge>{text}</Badge>;
 
-  const actionClass = (type: "ios" | "android" | "video") => {
-    if (type === "ios") return "bg-black text-white hover:bg-zinc-800 focus-visible:ring-black";
-    if (type === "android") return "bg-green-600 text-white hover:bg-green-700 focus-visible:ring-green-600";
-    return "bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-600";
-  };
-
   const sliderRef = useRef<HTMLDivElement>(null);
   const scrollByCard = (direction: "next" | "prev") => {
     const el = sliderRef.current;
@@ -57,7 +51,11 @@ export default function AssociatedProducts() {
   };
 
   return (
-    <section className="w-full py-24 px-4 sm:px-6 md:px-8 font-sans">
+    <section
+      id="associatedProducts"
+      className="relative w-full min-h-screen h-screen px-4 sm:px-6 md:px-8 pb-16 font-sans snap-start"
+      style={{ paddingTop: "calc(var(--navbar-height) + 36px)" }}
+    >
       <div className="max-w-6xl mx-auto">
         {/* Heading */}
         <SectionHeading
@@ -119,15 +117,19 @@ export default function AssociatedProducts() {
                 </Card>
               </div>
             ))}
-          </div>
-          <div className="flex justify-between mt-3">
-            <Button onClick={() => scrollByCard("prev")} ariaLabel="Scroll products left">
-              ◀ Prev
-            </Button>
-            <Button onClick={() => scrollByCard("next")} ariaLabel="Scroll products right">
-              Next ▶
-            </Button>
-          </div>
+        </div>
+        <div className="flex justify-between mt-3">
+          <Button onClick={() => scrollByCard("prev")} ariaLabel="Scroll left">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M8.5 12l6 6-1.4 1.4L5.7 12l7.4-7.4L14.5 6l-6 6z" />
+            </svg>
+          </Button>
+          <Button onClick={() => scrollByCard("next")} ariaLabel="Scroll right">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M15.5 12l-6-6 1.4-1.4 7.4 7.4-7.4 7.4L9.5 18l6-6z" />
+            </svg>
+          </Button>
+        </div>
         </div>
 
         {/* Desktop/tablet grid */}

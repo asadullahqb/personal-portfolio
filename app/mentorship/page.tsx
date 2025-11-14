@@ -4,7 +4,11 @@ import UnderConstruction from "../components/UnderConstruction";
 
 export default function Mentorship() {
   return (
-    <section className="w-full py-12 px-4 sm:px-6 md:px-8 font-sans">
+    <section
+      id="mentorship"
+      className="relative w-full min-h-screen h-screen px-4 sm:px-6 md:px-8 pb-16 font-sans snap-start"
+      style={{ paddingTop: "calc(var(--navbar-height) + 36px)" }}
+    >
       <div className="max-w-6xl mx-auto">
         <SectionHeading
           title="Mentorship"
