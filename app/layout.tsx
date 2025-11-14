@@ -18,7 +18,12 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Asadullah Qamar Bhatti | Data Scientist",
   description: "Passionate full-stack Data Scientist and AI Developer.",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 // Import the Navbar as a client component

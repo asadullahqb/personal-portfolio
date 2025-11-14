@@ -1,23 +1,10 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "play.google.com",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "tools.applemediaservices.com",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "img.youtube.com",
-        pathname: "/**",
-      },
+const nextConfig = {
+  experimental: {
+    allowedDevOrigins: [
+      process.env.DEV_ORIGIN || 'http://localhost:3000',
+      'http://127.0.0.1:3000',
+      'http://0.0.0.0:3000',
+      'http://192.168.1.28:3000',
     ],
   },
 };
