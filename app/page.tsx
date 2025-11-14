@@ -41,6 +41,9 @@ function getUserIP(): string | undefined {
   return undefined;
 }
 
+const CACHE_TTL_MS = 6 * 60 * 60 * 1000;
+const CACHE_KEY = "welcome_message_cache_v1";
+
 function TypewriterWelcome({ onContinue }: { onContinue?: () => void }) {
   const [fullText, setFullText] = useState<string | null>(null);
   const ANIMATION_DELAY = 120;
@@ -53,6 +56,20 @@ function TypewriterWelcome({ onContinue }: { onContinue?: () => void }) {
 
   useEffect(() => {
     async function fetchFullText() {
+      const ip = getUserIP();
+      try {
+        const cached = typeof window !== "undefined" ? window.localStorage.getItem(CACHE_KEY) : null;
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          const msg = parsed?.message;
+          const cachedIp = parsed?.ip;
+          const ts = parsed?.ts;
+          if (cachedIp === ip && typeof ts === "number" && Date.now() - ts < CACHE_TTL_MS) {
+            setFullText(typeof msg === "string" ? msg : "Welcome.");
+            return;
+          }
+        }
+      } catch {}
       try {
         const backendBase = getBackendBaseUrl('production');
         const response = await fetch(`${backendBase}/welcome/`, {
@@ -62,14 +79,20 @@ function TypewriterWelcome({ onContinue }: { onContinue?: () => void }) {
             "Accept": "application/json"
           },
           body: JSON.stringify({
-            ip: getUserIP()
+            ip
           })
         });
         if (!response.ok) {
           throw new Error(`Network response was not ok (${response.status})`);
         }
         const data = await response.json();
-        setFullText(data.message ?? "Welcome.");
+        const msg = data.message ?? "Welcome.";
+        setFullText(msg);
+        try {
+          if (typeof window !== "undefined") {
+            window.localStorage.setItem(CACHE_KEY, JSON.stringify({ message: msg, ip, ts: Date.now() }));
+          }
+        } catch {}
       } catch {
         setFullText("Welcome.");
       }
