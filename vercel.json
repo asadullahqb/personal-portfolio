@@ -13,5 +13,14 @@
   ],
   "env": {
     "NEXT_PUBLIC_BACKEND_URL": "@next_public_backend_url"
+  },
+  "domains": ["asadullahqamarbhatti.com"],
+  "github": {
+    "enabled": false
+  },
+  "build": {
+    "env": {
+      "NEXT_PUBLIC_BACKEND_URL": "@next_public_backend_url"
+    }
   }
 }

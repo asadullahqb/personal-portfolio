@@ -2,7 +2,10 @@ services:
   - type: web
     name: personal-portfolio-backend
     env: python
-    buildCommand: cd backend && pip install -r requirements.txt
+    buildCommand: |
+      cd backend
+      pip install --upgrade pip
+      pip install -r requirements.txt
     startCommand: cd backend && python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
@@ -11,5 +14,11 @@ services:
         value: 8000
       - key: HF_API_KEY
         sync: false
-
-        # Test
+      - key: ENVIRONMENT
+        value: production
+      - key: LOG_LEVEL
+        value: info
+    healthCheckPath: /health
+    autoDeploy: true
+    plan: starter
+    numInstances: 1
