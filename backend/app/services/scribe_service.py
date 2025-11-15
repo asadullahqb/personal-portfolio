@@ -28,8 +28,25 @@ def _hf_chat(messages: List[Dict[str, str]]) -> Optional[str]:
         return None
     return None
 
-def attribute_dialogue(segments: Optional[List[Dict[str, Any]]] = None, audio_file_id: Optional[str] = None) -> Dict[str, Any]:
-    content = "\n".join([str(s.get("text", "")) for s in (segments or [])]).strip()
+def attribute_dialogue(segments: Optional[List[Any]] = None, audio_file_id: Optional[str] = None) -> Dict[str, Any]:
+    def _seg_text(s: Any) -> str:
+        if isinstance(s, dict):
+            return str(s.get("text", ""))
+        # Pydantic BaseModel (v1/v2) or simple object
+        t = getattr(s, "text", None)
+        if t is None:
+            try:
+                # v2: model_dump
+                t = s.model_dump().get("text")  # type: ignore[attr-defined]
+            except Exception:
+                try:
+                    # v1: dict
+                    t = s.dict().get("text")  # type: ignore[attr-defined]
+                except Exception:
+                    t = None
+        return str(t or "")
+
+    content = "\n".join([_seg_text(s) for s in (segments or [])]).strip()
     sys_prompt = (
         "You are a medical scribe. Convert the conversation into labeled dialogue with lines prefixed as [Clinician] or [Patient]. "
         "Preserve chronological order and keep text unchanged except for labels."
@@ -44,7 +61,7 @@ def attribute_dialogue(segments: Optional[List[Dict[str, Any]]] = None, audio_fi
         sp = 0
         for s in segments:
             label = "Clinician" if sp % 2 == 0 else "Patient"
-            t = str(s.get("text", "")).strip()
+            t = _seg_text(s).strip()
             if t:
                 lines.append(f"[{label}] {t}")
             sp += 1

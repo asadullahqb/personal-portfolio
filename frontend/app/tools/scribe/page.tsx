@@ -71,6 +71,7 @@ function ScribeClient() {
   }, [config.apiBase]);
   const [transcript, setTranscript] = useState("");
   const [note, setNote] = useState("");
+  const [dialogue, setDialogue] = useState("");
   const [status, setStatus] = useState("Ready");
   const [recording, setRecording] = useState(false);
   const [interim, setInterim] = useState("");
@@ -79,6 +80,8 @@ function ScribeClient() {
   const wakeLockRef = useRef<{ release?: () => Promise<void> } | null>(null);
   const isActiveRef = useRef(false);
   const restartTimerRef = useRef<number | null>(null);
+  const segmentsRef = useRef<{ ts?: number; text: string }[]>([]);
+  const attrTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     const w = window as unknown as { SpeechRecognition?: new () => Recognition; webkitSpeechRecognition?: new () => Recognition };
@@ -111,7 +114,15 @@ function ScribeClient() {
         const text = ev.results[i][0].transcript + " ";
         if ((ev.results[i] as { isFinal: boolean }).isFinal) finalChunk += text; else interimChunk += text;
       }
-      if (finalChunk) setTranscript((prev) => mergeAppend(prev, finalChunk));
+      if (finalChunk) {
+        setTranscript((prev) => mergeAppend(prev, finalChunk));
+        const fin = finalChunk.trim();
+        if (fin) {
+          segmentsRef.current.push({ ts: Date.now() / 1000, text: fin });
+          if (segmentsRef.current.length > 500) segmentsRef.current.splice(0, segmentsRef.current.length - 500);
+          scheduleAttribute();
+        }
+      }
       setInterim(interimChunk.trim());
     };
     recogRef.current = r;
@@ -149,15 +160,18 @@ function ScribeClient() {
   function resetAll() {
     setTranscript("");
     setNote("");
+    setDialogue("");
     setStatus("Ready");
     setRecording(false);
     setInterim("");
     try { recogRef.current?.stop(); } catch {}
+    segmentsRef.current = [];
+    if (attrTimerRef.current) { clearTimeout(attrTimerRef.current); attrTimerRef.current = null; }
   }
 
   async function summarize() {
     setStatus("Summarizing");
-    const payload = { transcript };
+    const payload = { transcript, dialogue };
     try {
       const res = await fetch(config.apiBase + "/summarize", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       if (!res.ok) { setStatus("Summarize failed"); return; }
@@ -168,6 +182,27 @@ function ScribeClient() {
     } catch {
       setStatus("Summarize failed");
     }
+  }
+
+  async function attributeNow() {
+    const segments = segmentsRef.current.slice(-200);
+    if (!segments.length) return;
+    setStatus("Attributing");
+    try {
+      const res = await fetch(config.apiBase + "/attribute", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ segments }) });
+      if (!res.ok) { setStatus("Attribute failed"); return; }
+      const json = await res.json();
+      const d = json.dialogue;
+      setDialogue(typeof d === "string" ? d : JSON.stringify(d, null, 2));
+      setStatus("Attributed");
+    } catch {
+      setStatus("Attribute failed");
+    }
+  }
+
+  function scheduleAttribute() {
+    if (attrTimerRef.current) { clearTimeout(attrTimerRef.current); }
+    attrTimerRef.current = window.setTimeout(() => { attributeNow(); attrTimerRef.current = null; }, 1000);
   }
 
   function setLang(newLang: string) { setConfig({ apiBase: config.apiBase, lang: newLang || config.lang }); }
@@ -224,6 +259,11 @@ function ScribeClient() {
         <Card className="mt-6">
           <h3 className="text-lg font-semibold">Transcript</h3>
           <textarea value={mergeAppend(transcript, interim)} onChange={(e) => setTranscript(e.target.value)} rows={8} className="mt-3 w-full bg-zinc-50 text-zinc-800 border border-zinc-200 rounded-xl p-3" placeholder="Live transcript" />
+        </Card>
+        
+        <Card className="mt-6">
+          <h3 className="text-lg font-semibold">Dialogue</h3>
+          <textarea value={dialogue} onChange={(e) => setDialogue(e.target.value)} rows={10} className="mt-3 w-full bg-zinc-50 text-zinc-800 border border-zinc-200 rounded-xl p-3" placeholder="Live attributed dialogue ([Clinician]/[Patient])" />
         </Card>
         
         <Card className="mt-6">

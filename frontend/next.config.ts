@@ -28,6 +28,9 @@ const nextConfig = {
   experimental: {
     optimizeCss: true,
   },
+  turbopack: {
+    root: __dirname,
+  },
 };
 
 export default nextConfig;
