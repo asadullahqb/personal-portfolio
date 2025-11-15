@@ -78,7 +78,7 @@ jobs:
       - name: Test backend import
         run: |
           cd backend
-          python -c "from app.main import app; print('Backend imports successfully')"
+          python -c "from main import app; print('Backend imports successfully')"
 
   deploy-frontend:
     name: Deploy Frontend to Vercel
