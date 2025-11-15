@@ -11,7 +11,7 @@ export default function Tools() {
     },
     {
       title: "Coming Soon",
-      desc: "More AI-powered tools will appear here shortly.",
+      desc: "More AI-powered tools will appear here soon.",
       href: undefined,
     },
   ];
