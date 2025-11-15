@@ -1,93 +1,282 @@
-# Ver 1.0 (11th November 2025)
+# Personal Portfolio - Full Stack Application
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app). This repository is for the front-end and it is to be used along with the backend repository found here: https://github.com/asadullahqb/personal-portfolio-backend.
+A modern personal portfolio website with AI-powered welcome messages, built with Next.js frontend and FastAPI backend.
 
-## Users
+## 🚀 Features
 
-### Getting Started
+- **AI-Powered Welcome Messages**: Automatically detects user location and displays welcome messages in their local language
+- **Modern Frontend**: Built with Next.js 15, React 19, TypeScript, and Tailwind CSS
+- **FastAPI Backend**: High-performance Python backend with ML capabilities
+- **Responsive Design**: Mobile-first, fully responsive design
+- **Typewriter Animation**: Smooth typewriter effect for welcome messages
+- **Monorepo Structure**: Clean separation of frontend and backend code
 
-Visit the site at https://asadullahqamarbhatti.com
+## 📁 Project Structure
 
-### Features
+```
+personal-portfolio/
+├── frontend/          # Next.js frontend application
+│   ├── app/          # Next.js App Router pages
+│   ├── public/       # Static assets
+│   └── package.json  # Frontend dependencies
+├── backend/          # FastAPI backend application
+│   ├── app/          # FastAPI application code
+│   ├── requirements.txt # Python dependencies
+│   └── render.yaml   # Render deployment config
+├── .github/          # GitHub Actions workflows
+└── package.json      # Root package.json with scripts
+```
 
-#### Welcome Page
+## 🛠️ Tech Stack
 
-When you access the site, you are greeted with a welcome message translated to the language of where you come from. This is powered by AI.
+### Frontend
+- **Next.js 15** - React framework
+- **React 19** - UI library
+- **TypeScript** - Type safety
+- **Tailwind CSS** - Utility-first CSS
+- **Geist Font** - Modern typography
 
-#### Tools
+### Backend
+- **FastAPI** - Modern Python web framework
+- **Hugging Face API** - AI-powered welcome messages
+- **Uvicorn** - ASGI server
+- **Python 3.11** - Latest Python version
 
-Here you will find a suite of custom-developed and useful AI-powered tools. Upcoming AI-powered tools include...
+### Deployment
+- **Vercel** - Frontend hosting
+- **Render** - Backend hosting
+- **GitHub Actions** - CICD pipeline
 
-- Daily horoscope generator tool,
-- Crime rate predictor based on location,
-- How hot is it gonna be based on location and time?,
-- Pokemon Unite Analytics Tool, 
-- More coming soon.
+## 🚀 Quick Start
 
-#### Products
+### Prerequisites
+- Node.js 18+ 
+- Python 3.11+
+- Git
 
-A list of products available in the market that I contributed to or developed. Full credits and rights reserved to the company or party that I contributed to.
-
-## Developers
-
-Please be reminded that this repo is only for the frontend. The project was separated to two repos because I was exploring a wide variety of stacks to power the application and preferred keeping the complexity to a minimum from the kickstart. In the future, I plan to merge everything into one repo and use deployment best-practices.
-
-### Getting Started
-
-#### Clone the Repository
-
-If you haven't already, clone this repository from GitHub:
-
+### 1. Clone the Repository
 ```bash
-git clone https://github.com/asadullahqb/personal-portfolio.git
+git clone https://github.com/yourusername/personal-portfolio.git
 cd personal-portfolio
 ```
 
-#### Install Dependencies
+### 2. Environment Setup
 
-Then install the dependencies:
-
+#### Frontend Environment
 ```bash
-npm install
-# or
-yarn install
-# or
-pnpm install
-# or
-bun install
+cd frontend
+cp .env.local.example .env.local
+# Edit .env.local with your backend URL
 ```
 
-#### Run the Development Server
+#### Backend Environment
+```bash
+cd ../backend
+cp .env.example .env
+# Edit .env with your Hugging Face API key
+```
 
-Start the development server:
+See [ENVIRONMENT_SETUP.md](ENVIRONMENT_SETUP.md) for detailed environment setup instructions.
 
+### 3. Install Dependencies
+
+#### Install all dependencies (root level)
+```bash
+cd ..
+npm run install:all
+```
+
+#### Or install separately:
+```bash
+# Frontend
+cd frontend
+npm install
+
+# Backend
+cd ../backend
+pip install -r requirements.txt
+```
+
+### 4. Development
+
+#### Run both frontend and backend
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+#### Run frontend only
+```bash
+npm run dev:frontend
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+#### Run backend only
+```bash
+npm run dev:backend
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 5. Production Build
 
-## Learn More
+#### Build frontend
+```bash
+npm run build:frontend
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 🌍 Environment Variables
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Frontend (.env.local)
+```
+NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Backend (.env)
+```
+HF_API_KEY=your_huggingface_api_key_here
+```
 
-## Deploy on Vercel
+## 🚀 Deployment
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Automatic Deployment (Recommended)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The repository includes GitHub Actions CICD that automatically deploys to production when you push to the `main` branch.
+
+#### Setup Steps:
+
+1. **Connect to GitHub**
+   - Push your code to GitHub
+   - Create a new repository
+
+2. **Connect Vercel to GitHub**
+   - Go to [Vercel](https://vercel.com)
+   - Import your GitHub repository
+   - Configure environment variables
+
+3. **Connect Render to GitHub**
+   - Go to [Render](https://render.com)
+   - Create new web service from GitHub
+   - Use the `render.yaml` configuration
+
+4. **Set up GitHub Secrets**
+   - Go to your GitHub repository Settings → Secrets → Actions
+   - Add the required secrets (see below)
+
+#### Required GitHub Secrets:
+
+```
+# Vercel
+VERCEL_TOKEN=your_vercel_token
+VERCEL_ORG_ID=your_vercel_org_id  
+VERCEL_PROJECT_ID=your_vercel_project_id
+
+# Render
+RENDER_API_KEY=your_render_api_key
+RENDER_SERVICE_ID=your_render_service_id
+
+# Application
+NEXT_PUBLIC_BACKEND_URL=your_backend_url
+```
+
+### Manual Deployment
+
+#### Deploy Frontend to Vercel
+```bash
+npm run deploy:vercel
+```
+
+#### Deploy Backend to Render
+```bash
+npm run deploy:render
+```
+
+## 🔧 Configuration Files
+
+### Vercel Configuration (vercel.json)
+- Configures frontend deployment
+- Routes API calls to backend
+- Environment variable mapping
+
+### Render Configuration (backend/render.yaml)
+- Configures backend deployment
+- Python environment setup
+- Build and start commands
+
+## 🧪 Testing
+
+### Backend Tests
+```bash
+cd backend
+python -m pytest tests/ -v
+```
+
+### Frontend Development Test
+```bash
+cd frontend
+npm run dev
+```
+
+## 📝 API Documentation
+
+### Welcome Message Endpoint
+```http
+POST /welcome/
+Content-Type: application/json
+
+{
+  "ip": "user_ip_address"
+}
+```
+
+Response:
+```json
+{
+  "message": "Welcome!",
+  "language": "en",
+  "country_code": "US",
+  "ip_used": "user_ip_address",
+  "source": "ai"
+}
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+1. **Build fails on Vercel**
+   - Check environment variables
+   - Verify TypeScript compilation
+   - Check for missing dependencies
+
+2. **Backend not responding**
+   - Verify HF_API_KEY is set
+   - Check Render service logs
+   - Ensure Python dependencies are installed
+
+3. **Welcome message not translating**
+   - Check Hugging Face API key validity
+   - Verify backend is running
+   - Check browser console for errors
+
+## 📞 Support
+
+For issues and questions:
+- Check the [troubleshooting guide](ENVIRONMENT_SETUP.md)
+- Open an issue on GitHub
+- Review deployment logs on Vercel/Render dashboards
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+- Hugging Face for AI translation API
+- Vercel for frontend hosting
+- Render for backend hosting
+- Next.js team for the amazing framework
