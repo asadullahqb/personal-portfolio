@@ -171,17 +171,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Deploy to Render
-        uses: johnbeynon/render-deploy-action@v0.0.8
-        with:
-          service-id: ${{ secrets.RENDER_SERVICE_ID }}
-          api-key: ${{ secrets.RENDER_API_KEY }}
-
-      - name: Wait for deployment
+      - name: Trigger Render deploy via hook
         run: |
-          echo "Waiting for backend deployment to complete..."
-          sleep 30
-          echo "Backend deployment initiated"
+          curl -fsSL -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
+          echo "Backend deploy triggered on Render"
 
   notify-deployment:
     name: Notify Deployment Status
