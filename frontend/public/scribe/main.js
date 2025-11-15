@@ -6,7 +6,14 @@ const storage = {
   set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
 };
 
-let config = storage.get(cfgKey, { apiBase: "http://localhost:8787", lang: "en-US" });
+let config = storage.get(cfgKey, { apiBase: "http://localhost:8000", lang: "en-US" });
+try {
+  const a = (config.apiBase || "").trim();
+  if (a.includes("localhost:8787")) {
+    config.apiBase = "http://localhost:8000";
+    storage.set(cfgKey, config);
+  }
+} catch {}
 
 const els = {
   status: document.getElementById("status"),
@@ -153,12 +160,16 @@ async function attributeSpeakers() {
 async function summarize() {
   setStatus("Summarizing");
   const payload = { transcript: els.transcript.value, dialogue: els.dialogue.value };
-  const res = await fetch(config.apiBase + "/summarize", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-  if (!res.ok) { setStatus("Summarize failed"); return; }
-  const json = await res.json();
-  const n = json.note;
-  els.note.value = typeof n === "string" ? n : JSON.stringify(n, null, 2);
-  setStatus("Summarized");
+  try {
+    const res = await fetch(config.apiBase + "/summarize", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+    if (!res.ok) { setStatus("Summarize failed"); return; }
+    const json = await res.json();
+    const n = json.note;
+    els.note.value = typeof n === "string" ? n : JSON.stringify(n, null, 2);
+    setStatus("Summarized");
+  } catch (e) {
+    setStatus("Summarize failed");
+  }
 }
 
 function copyNote() {

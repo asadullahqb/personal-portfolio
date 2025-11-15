@@ -15,18 +15,21 @@ else:
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import health, welcome
+from app.routers import health, welcome, scribe, model_a
 
 app = FastAPI(title="Multi-Model ML API")
 
 # Add CORS middleware directly after creating the app instance
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "*"],  # Allow local frontend and wildcard (Vercel, etc.)
+    allow_origins=["http://localhost:3000", "http://localhost:3001"],
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
-    allow_methods=["*"],  # Allow all standard HTTP methods
-    allow_headers=["*"],  # Allow all standard headers (including Authorization, Content-Type)
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(health.router)
 app.include_router(welcome.router)
+app.include_router(scribe.router)
+app.include_router(model_a.router)

@@ -61,8 +61,14 @@ function useLocalStorage<T>(key: string, initial: T) {
 function ScribeClient() {
   const [config, setConfig] = useLocalStorage<{ apiBase: string; lang: string }>(
     "scribe_config",
-    { apiBase: "http://localhost:8787", lang: "en-US" }
+    { apiBase: "http://localhost:8000", lang: "en-US" }
   );
+  useEffect(() => {
+    const a = (config.apiBase || "").trim();
+    if (a.includes("localhost:8787")) {
+      setConfig({ apiBase: "http://localhost:8000", lang: config.lang });
+    }
+  }, [config.apiBase]);
   const [transcript, setTranscript] = useState("");
   const [note, setNote] = useState("");
   const [status, setStatus] = useState("Ready");
@@ -152,12 +158,16 @@ function ScribeClient() {
   async function summarize() {
     setStatus("Summarizing");
     const payload = { transcript };
-    const res = await fetch(config.apiBase + "/summarize", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-    if (!res.ok) { setStatus("Summarize failed"); return; }
-    const json = await res.json();
-    const n = json.note;
-    setNote(typeof n === "string" ? n : JSON.stringify(n, null, 2));
-    setStatus("Summarized");
+    try {
+      const res = await fetch(config.apiBase + "/summarize", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+      if (!res.ok) { setStatus("Summarize failed"); return; }
+      const json = await res.json();
+      const n = json.note;
+      setNote(typeof n === "string" ? n : JSON.stringify(n, null, 2));
+      setStatus("Summarized");
+    } catch {
+      setStatus("Summarize failed");
+    }
   }
 
   function setLang(newLang: string) { setConfig({ apiBase: config.apiBase, lang: newLang || config.lang }); }
