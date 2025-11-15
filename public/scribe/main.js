@@ -32,6 +32,41 @@ const els = {
 let recognition;
 let recording = false;
 let currentFileId = null;
+let finalTranscript = "";
+function dedupeImmediate(s) {
+  const parts = s.split(/\s+/);
+  const out = [];
+  let prev = "";
+  for (const p of parts) {
+    const n = p.replace(/[.,!?;:]+$/g, "").toLowerCase();
+    if (n && n === prev) {
+      continue;
+    }
+    out.push(p);
+    prev = n;
+  }
+  return out.join(" ").replace(/\s+/g, " ").trim();
+}
+function norm(w){return w.replace(/^[\p{P}\p{S}]+|[\p{P}\p{S}]+$/gu,"").toLowerCase();}
+function mergeAppend(base, addition){
+  const a=(base||"").trim();
+  const b=(addition||"").trim();
+  if(!b) return a;
+  if(!a) return dedupeImmediate(b);
+  const aWords=a.split(/\s+/);
+  const bWords=b.split(/\s+/);
+  const aN=aWords.map(norm);
+  const bN=bWords.map(norm);
+  const maxK=Math.min(aWords.length,bWords.length,20);
+  let overlap=0;
+  for(let k=maxK;k>=1;k--){
+    let ok=true;
+    for(let i=0;i<k;i++){ if(aN[aN.length-k+i]!==bN[i]){ ok=false; break; } }
+    if(ok){ overlap=k; break; }
+  }
+  const merged=(a+" "+bWords.slice(overlap).join(" ")).replace(/\s+/g," ").trim();
+  return dedupeImmediate(merged);
+}
 
 function setStatus(t) { els.status.textContent = t; }
 
@@ -41,14 +76,23 @@ function initASR() {
   recognition = new SR();
   recognition.lang = config.lang || "en-US";
   recognition.interimResults = true;
+  recognition.maxAlternatives = 1;
   recognition.continuous = true;
   recognition.onstart = () => setStatus("Recording");
   recognition.onerror = () => setStatus("ASR error");
   recognition.onend = () => { recording = false; setStatus("Stopped"); };
   recognition.onresult = (e) => {
-    let s = "";
-    for (let i = e.resultIndex; i < e.results.length; i++) s += e.results[i][0].transcript + " ";
-    els.transcript.value = (els.transcript.value + " " + s).trim();
+    let f = "";
+    let it = "";
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const t = e.results[i][0].transcript + " ";
+      if (e.results[i].isFinal) f += t; else it += t;
+    }
+    if (f) {
+      finalTranscript = mergeAppend(finalTranscript, f);
+    }
+    const display = mergeAppend(finalTranscript, it);
+    els.transcript.value = display;
   };
 }
 
@@ -56,6 +100,8 @@ function startRecording() {
   if (!recognition) return;
   if (recording) return;
   recording = true;
+  finalTranscript = "";
+  els.transcript.value = "";
   recognition.start();
 }
 

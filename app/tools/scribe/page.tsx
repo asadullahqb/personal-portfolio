@@ -4,6 +4,43 @@ import { useEffect, useRef, useState } from "react";
 import Card from "@/app/components/ui/Card";
 import Button from "@/app/components/ui/Button";
 
+function dedupeImmediate(s: string) {
+  const parts = s.split(/\s+/);
+  const out: string[] = [];
+  let prev = "";
+  for (const p of parts) {
+    const n = p.replace(/[.,!?;:]+$/g, "").toLowerCase();
+    if (n && n === prev) {
+      continue;
+    }
+    out.push(p);
+    prev = n;
+  }
+  return out.join(" ").replace(/\s+/g, " ").trim();
+}
+function norm(w: string) { return w.replace(/[\p{P}\p{S}]+$/gu, "").replace(/^[\p{P}\p{S}]+/gu, "").toLowerCase(); }
+function mergeAppend(base: string, addition: string) {
+  const a = (base || "").trim();
+  const b = (addition || "").trim();
+  if (!b) return a;
+  if (!a) return dedupeImmediate(b);
+  const aWords = a.split(/\s+/);
+  const bWords = b.split(/\s+/);
+  const aN = aWords.map(norm);
+  const bN = bWords.map(norm);
+  const maxK = Math.min(aWords.length, bWords.length, 20);
+  let overlap = 0;
+  for (let k = maxK; k >= 1; k--) {
+    let ok = true;
+    for (let i = 0; i < k; i++) {
+      if (aN[aN.length - k + i] !== bN[i]) { ok = false; break; }
+    }
+    if (ok) { overlap = k; break; }
+  }
+  const merged = (a + " " + bWords.slice(overlap).join(" ")).replace(/\s+/g, " ").trim();
+  return dedupeImmediate(merged);
+}
+
 function useLocalStorage<T>(key: string, initial: T) {
   const [val, setVal] = useState<T>(() => {
     try {
@@ -68,7 +105,7 @@ function ScribeClient() {
         const text = ev.results[i][0].transcript + " ";
         if ((ev.results[i] as { isFinal: boolean }).isFinal) finalChunk += text; else interimChunk += text;
       }
-      if (finalChunk) setTranscript((prev) => (prev + " " + finalChunk).trim());
+      if (finalChunk) setTranscript((prev) => mergeAppend(prev, finalChunk));
       setInterim(interimChunk.trim());
     };
     recogRef.current = r;
@@ -129,7 +166,7 @@ function ScribeClient() {
     <section
       id="tools"
       className="relative w-full min-h-[100dvh] h-[100dvh] px-4 sm:px-6 md:px-8 pb-0 font-sans snap-start"
-      style={{ paddingTop: "calc(var(--navbar-height) + 36px)" }}
+      style={{ paddingTop: "calc(var(--navbar-height) + 36px)", ["--navbar-height"]: "108px" } as React.CSSProperties}
     >
       <div className="max-w-6xl mx-auto h-full flex flex-col pb-24">
         <Card className="mt-2">
@@ -176,7 +213,7 @@ function ScribeClient() {
 
         <Card className="mt-6">
           <h3 className="text-lg font-semibold">Transcript</h3>
-          <textarea value={(transcript + (interim ? " " + interim : "")).trim()} onChange={(e) => setTranscript(e.target.value)} rows={8} className="mt-3 w-full bg-zinc-50 text-zinc-800 border border-zinc-200 rounded-xl p-3" placeholder="Live transcript" />
+          <textarea value={mergeAppend(transcript, interim)} onChange={(e) => setTranscript(e.target.value)} rows={8} className="mt-3 w-full bg-zinc-50 text-zinc-800 border border-zinc-200 rounded-xl p-3" placeholder="Live transcript" />
         </Card>
         
         <Card className="mt-6">

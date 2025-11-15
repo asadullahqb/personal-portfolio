@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 
@@ -21,7 +21,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [subMenuOpen, setSubMenuOpen] = useState(false);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const nav = document.querySelector("nav");
     if (!nav) return;
     const updateVar = () => {
