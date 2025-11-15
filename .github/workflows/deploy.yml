@@ -186,7 +186,7 @@ jobs:
           if [ "${{ needs.deploy-frontend.result }}" == "success" ] && [ "${{ needs.deploy-backend.result }}" == "success" ]; then
             echo "🎉 Deployment successful!"
             echo "Frontend: https://asadullahqamarbhatti.com"
-            echo "Backend: Check Render dashboard for URL"
+            echo "Backend: https://personal-portfolio-backend-nm7v.onrender.com"
           else
             echo "❌ Deployment failed. Check logs above."
             exit 1
