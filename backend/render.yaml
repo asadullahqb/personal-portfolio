@@ -11,3 +11,5 @@ services:
         value: 8000
       - key: HF_API_KEY
         sync: false
+
+        # Test
