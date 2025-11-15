@@ -34,6 +34,8 @@ function ScribeClient() {
   const recogRef = useRef<Recognition | null>(null);
   const recordingRef = useRef(false);
   const wakeLockRef = useRef<{ release?: () => Promise<void> } | null>(null);
+  const isActiveRef = useRef(false);
+  const restartTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     const w = window as unknown as { SpeechRecognition?: new () => Recognition; webkitSpeechRecognition?: new () => Recognition };
@@ -44,20 +46,14 @@ function ScribeClient() {
     r.interimResults = true;
     r.maxAlternatives = 1;
     r.continuous = true;
-    r.onstart = () => { setStatus("Recording"); setRecording(true); };
-    r.onerror = () => {
-      setStatus("ASR error");
-      if (recordingRef.current) {
-        try { r.stop(); } catch {}
-        setTimeout(() => { try { r.start(); } catch {} }, 300);
-      }
-    };
+    r.onstart = () => { setStatus("Recording"); setRecording(true); isActiveRef.current = true; if (restartTimerRef.current) { clearTimeout(restartTimerRef.current); restartTimerRef.current = null; } };
+    r.onerror = () => { setStatus("ASR error"); isActiveRef.current = false; };
     r.onend = () => {
+      isActiveRef.current = false;
       if (recordingRef.current) {
+        if (restartTimerRef.current) { clearTimeout(restartTimerRef.current); }
+        restartTimerRef.current = window.setTimeout(() => { try { r.start(); } catch {} }, 800);
         setStatus("Resuming");
-        setTimeout(() => {
-          try { r.start(); } catch {}
-        }, 300);
       } else {
         setStatus("Stopped");
       }
@@ -76,7 +72,7 @@ function ScribeClient() {
       setInterim(interimChunk.trim());
     };
     recogRef.current = r;
-    return () => { try { r.stop(); } catch {} };
+    return () => { try { r.stop(); } catch {}; if (restartTimerRef.current) { clearTimeout(restartTimerRef.current); restartTimerRef.current = null; } };
   }, [config.lang]);
 
   useEffect(() => { recordingRef.current = recording; }, [recording]);
@@ -96,11 +92,12 @@ function ScribeClient() {
     } catch {}
     setRecording(true);
     setInterim("");
-    try { recogRef.current?.start(); } catch { setStatus("ASR start failed"); }
+    try { if (!isActiveRef.current) recogRef.current?.start(); } catch { setStatus("ASR start failed"); }
   }
   async function stopRecording() {
     setRecording(false);
-    try { recogRef.current?.stop(); } catch {}
+    if (restartTimerRef.current) { clearTimeout(restartTimerRef.current); restartTimerRef.current = null; }
+    try { if (isActiveRef.current) recogRef.current?.stop(); } catch {}
     try { await wakeLockRef.current?.release?.(); } catch {}
     wakeLockRef.current = null;
     setInterim("");
@@ -152,7 +149,6 @@ function ScribeClient() {
                 <option value="es-ES">Spanish</option>
                 <option value="de-DE">German</option>
                 <option value="ms-MY">Malay (Malaysia)</option>
-                <option value="ur-PK">Urdu (Pakistan)</option>
               </select>
             </div>
           </div>
