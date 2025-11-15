@@ -62,7 +62,7 @@ export default function AssociatedProducts() {
         <div className="md:hidden flex-1 min-h-0 mt-8">
           <div
             ref={sliderRef}
-            className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-2"
+            className="flex overflow-x-auto snap-x snap-mandatory gap-6 px-3 pt-2 pb-2"
             style={{ overscrollBehaviorX: "contain", WebkitOverflowScrolling: "touch", touchAction: "pan-x" }}
           >
             {products.map((p) => (
@@ -116,7 +116,7 @@ export default function AssociatedProducts() {
         </div>
 
         {/* Desktop/tablet grid */}
-        <div className="hidden md:grid flex-1 min-h-0 overflow-y-auto grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+        <div className="hidden md:grid flex-1 min-h-0 overflow-visible grid-cols-2 lg:grid-cols-3 gap-6 mt-8 px-1 pt-1">
           {products.map((p) => (
             <Card key={p.name}>
               {/* Icon / Initials */}

@@ -195,7 +195,7 @@ export default function HomePage() {
     const tryScroll = () => {
       const el = document.getElementById(h);
       if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        el.scrollIntoView({ behavior: "auto", block: "start" });
       } else if (attempts < 20) {
         attempts++;
         setTimeout(tryScroll, 50);

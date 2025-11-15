@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import Card from "@/app/components/ui/Card";
-import SectionHeading from "@/app/components/ui/Heading";
 import Button from "@/app/components/ui/Button";
 
 function useLocalStorage<T>(key: string, initial: T) {
@@ -133,11 +132,10 @@ function ScribeClient() {
     <section
       id="tools"
       className="relative w-full min-h-[100dvh] h-[100dvh] px-4 sm:px-6 md:px-8 pb-0 font-sans snap-start"
-      style={{ paddingTop: "calc(var(--navbar-height) + 36px)" }}
+      style={{ paddingTop: "calc(var(--navbar-height) + 12px)" }}
     >
       <div className="max-w-6xl mx-auto h-full flex flex-col pb-24">
-        <SectionHeading title="Medical Scribe" className="mb-0" />
-        <Card className="mt-6">
+        <Card className="mt-2">
           <div className="flex items-center justify-between">
             <div className="text-sm text-zinc-500">{status}</div>
             <div className="flex gap-2 items-center">

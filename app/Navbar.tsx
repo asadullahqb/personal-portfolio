@@ -1,8 +1,8 @@
-// app/components/Navbar.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 const navItems = [
   { name: "Home", id: "home" },
@@ -13,6 +13,7 @@ const navItems = [
 ];
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [active, setActive] = useState(() => {
     const h = typeof window !== "undefined" ? window.location.hash.slice(1) : "";
     return navItems.some((item) => item.id === h) ? h : "home";
@@ -49,12 +50,14 @@ export default function Navbar() {
         if (visible && visible.target.id && visible.target.id !== active) {
           const id = visible.target.id;
           setActive(id);
-          // Update URL to reflect current section
-          window.history.replaceState(
-            null,
-            "",
-            id === "home" ? "/" : `/#${id}`
-          );
+          // Only update URL on the root page to avoid losing subnav on subpages
+          if (pathname === "/") {
+            window.history.replaceState(
+              null,
+              "",
+              id === "home" ? "/" : `/#${id}`
+            );
+          }
         }
       },
       {
@@ -67,29 +70,11 @@ export default function Navbar() {
 
     sections.forEach((s) => observer.observe(s));
     return () => observer.disconnect();
-  }, [active]);
+  }, [active, pathname]);
 
-  // Smooth scroll function and update URL
-  const scrollToSection = (id: string) => {
-    const pathname = typeof window !== "undefined" ? window.location.pathname : "/";
-    if (pathname !== "/") {
-      setMenuOpen(false);
-      setActive(id);
-      window.location.assign(id === "home" ? "/" : `/#${id}`);
-      return;
-    }
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
-      setActive(id);
-      setMenuOpen(false);
-      setTimeout(() => {
-        window.history.pushState(null, "", id === "home" ? "/" : `/#${id}`);
-      }, 0);
-    } else {
-      window.location.assign(id === "home" ? "/" : `/#${id}`);
-    }
-  };
+  const effectiveActive = pathname && pathname.startsWith("/tools") ? "tools" : active;
+
+  
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md">
@@ -117,9 +102,8 @@ export default function Navbar() {
               <a
                 key={item.id}
                 href={href}
-                onClick={(e) => { e.preventDefault(); scrollToSection(item.id); }}
                 className={`text-sm lg:text-lg font-medium hover:text-blue-600 transition ${
-                  active === item.id ? "text-blue-600" : "text-gray-700"
+                  effectiveActive === item.id ? "text-blue-600" : "text-gray-700"
                 }`}
               >
                 {item.name}
@@ -164,15 +148,42 @@ export default function Navbar() {
                 <a
                   key={item.id}
                   href={href}
-                  onClick={(e) => { e.preventDefault(); scrollToSection(item.id); }}
+                  onClick={() => { setMenuOpen(false); }}
                   className={`text-base py-2 text-left font-medium hover:text-blue-600 transition ${
-                    active === item.id ? "text-blue-600" : "text-gray-700"
+                    effectiveActive === item.id ? "text-blue-600" : "text-gray-700"
                   }`}
                 >
                   {item.name}
                 </a>
               );
             })}
+          </div>
+        </div>
+      )}
+
+      {pathname && pathname.startsWith("/tools/") && (
+        <div className="border-t border-zinc-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/70">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-11 flex items-center">
+            <div className="w-full">
+              <div className="flex items-center gap-6">
+                {[
+                  { name: "Medical Scribe", href: "/tools/scribe" },
+                  { name: "Coming Soon", href: "/tools/coming-soon" },
+                ].map((s) => (
+                  <a
+                    key={s.href}
+                    href={s.href}
+                    className={`text-sm font-medium transition-colors ${
+                      pathname === s.href
+                        ? "text-blue-600"
+                        : "text-gray-700 hover:text-blue-600"
+                    }`}
+                  >
+                    {s.name}
+                  </a>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       )}
