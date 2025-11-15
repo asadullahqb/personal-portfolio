@@ -132,7 +132,7 @@ function ScribeClient() {
     <section
       id="tools"
       className="relative w-full min-h-[100dvh] h-[100dvh] px-4 sm:px-6 md:px-8 pb-0 font-sans snap-start"
-      style={{ paddingTop: "calc(var(--navbar-height) + 12px)" }}
+      style={{ paddingTop: "calc(var(--navbar-height) + 36px)" }}
     >
       <div className="max-w-6xl mx-auto h-full flex flex-col pb-24">
         <Card className="mt-2">
@@ -151,6 +151,7 @@ function ScribeClient() {
                 <option value="fr-FR">French</option>
                 <option value="es-ES">Spanish</option>
                 <option value="de-DE">German</option>
+                <option value="ms-MY">Malay (Malaysia)</option>
                 <option value="ur-PK">Urdu (Pakistan)</option>
               </select>
             </div>

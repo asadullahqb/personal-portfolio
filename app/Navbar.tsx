@@ -30,7 +30,7 @@ export default function Navbar() {
     updateVar();
     window.addEventListener("resize", updateVar);
     return () => window.removeEventListener("resize", updateVar);
-  }, []);
+  }, [pathname]);
 
   // Observe sections to update active nav and URL without scroll jank
   useEffect(() => {
