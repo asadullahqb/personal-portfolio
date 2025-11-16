@@ -1,11 +1,13 @@
 # Personal Portfolio - Full Stack Application
 
 A modern personal portfolio website with AI-powered welcome messages, built with Next.js frontend and FastAPI backend.
+Find the publicly available website at https://asadullahqamarbhatti.com
 
 ## 🚀 Features
 
 - **AI-Powered Welcome Messages**: Automatically detects user location and displays welcome messages in their local language
-- **Modern Frontend**: Built with Next.js 15, React 19, TypeScript, and Tailwind CSS
+ - **Modern Frontend**: Built with Next.js 16, React 19, TypeScript, and Tailwind CSS
+ - **Web Analytics**: Vercel Analytics and Speed Insights integrated
 - **FastAPI Backend**: High-performance Python backend with ML capabilities
 - **Responsive Design**: Mobile-first, fully responsive design
 - **Typewriter Animation**: Smooth typewriter effect for welcome messages
@@ -30,11 +32,25 @@ personal-portfolio/
 ## 🛠️ Tech Stack
 
 ### Frontend
-- **Next.js 15** - React framework
+- **Next.js 16** - React framework
 - **React 19** - UI library
 - **TypeScript** - Type safety
 - **Tailwind CSS** - Utility-first CSS
 - **Geist Font** - Modern typography
+
+### Observability
+- **Vercel Analytics** - Privacy-friendly web analytics
+- **Vercel Speed Insights** - Real user performance metrics
+
+## 🧭 Website Features
+
+- **Home**: Typewriter welcome message powered by backend AI (`frontend/app/page.tsx:200`)
+- **Tools**: Launcher for utilities (`frontend/app/tools/page.tsx:31`)
+- **Medical Scribe Assistant**: Live speech-to-text, dialogue attribution, note summarization (`frontend/app/tools/scribe/page.tsx:236`)
+- **Daily Horoscope**: Philosophy selector, basic/advanced inputs, personalized guidance (`frontend/app/tools/horoscope/page.tsx:104`)
+- **Associated Products**: Grid of apps with store links and proxied icons (`frontend/app/associatedProducts/page.tsx:119`)
+- **Publications**: Section scaffold; content under construction (`frontend/app/publications/page.tsx:19`)
+- **Mentorship**: Section scaffold; content under construction (`frontend/app/mentorship/page.tsx:19`)
 
 ### Backend
 - **FastAPI** - Modern Python web framework
