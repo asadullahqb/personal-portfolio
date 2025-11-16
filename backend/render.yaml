@@ -16,6 +16,8 @@ services:
         sync: false
       - key: BACKEND_URL
         value: https://personal-portfolio-backend-nm7v.onrender.com
+      - key: ALLOWED_ORIGINS
+        value: https://asadullahqamarbhatti.com,https://www.asadullahqamarbhatti.com
       - key: LOG_LEVEL
         value: info
     healthCheckPath: /health

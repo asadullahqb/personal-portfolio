@@ -12,7 +12,8 @@ app = FastAPI(title="Personal Portfolio Backend API")
 
 # Configure CORS using a single variable: BACKEND_URL
 backend_url = os.environ.get("BACKEND_URL", "http://localhost:8000").lower()
-origins = [
+env_origins = os.environ.get("ALLOWED_ORIGINS", "").strip()
+origins = [o.strip() for o in env_origins.split(",") if o.strip()] or [
     "http://localhost:3000",
     "http://localhost:3001",
     "https://asadullahqamarbhatti.com",
