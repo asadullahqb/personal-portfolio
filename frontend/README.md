@@ -18,7 +18,6 @@ When you access the site, you are greeted with a welcome message translated to t
 
 Here you will find a suite of custom-developed and useful AI-powered tools. Upcoming AI-powered tools include...
 
-- Daily horoscope generator tool,
 - Crime rate predictor based on location,
 - How hot is it gonna be based on location and time?,
 - Pokemon Unite Analytics Tool, 
