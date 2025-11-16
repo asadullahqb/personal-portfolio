@@ -4,7 +4,8 @@ from typing import List, Optional, Any
 from app.services.scribe_service import summarize_note, attribute_dialogue
 from app.utils.uploads import init_upload, write_chunk, finalize_upload
 
-router = APIRouter()
+router = APIRouter(prefix="/scribe", tags=["Scribe"])
+router_public = APIRouter(tags=["Scribe"])
 
 class Segment(BaseModel):
     ts: Optional[float] = None
@@ -38,11 +39,13 @@ class SummarizeResponse(BaseModel):
     provider: str
 
 @router.post("/upload_init", response_model=UploadInitResponse)
+@router_public.post("/upload_init", response_model=UploadInitResponse)
 def upload_init():
     upload_id = init_upload()
     return {"uploadId": upload_id}
 
 @router.post("/upload_chunk")
+@router_public.post("/upload_chunk")
 async def upload_chunk(request: Request, uploadId: Optional[str] = None, index: Optional[int] = None):
     if not uploadId or index is None:
         raise HTTPException(status_code=400, detail={"error": "Missing uploadId or index"})
@@ -51,6 +54,7 @@ async def upload_chunk(request: Request, uploadId: Optional[str] = None, index: 
     return {"ok": True, "index": index}
 
 @router.post("/upload_finalize", response_model=UploadFinalizeResponse)
+@router_public.post("/upload_finalize", response_model=UploadFinalizeResponse)
 def upload_finalize(payload: UploadFinalizeRequest):
     if not payload.uploadId:
         raise HTTPException(status_code=400, detail={"error": "Missing uploadId"})
@@ -58,11 +62,13 @@ def upload_finalize(payload: UploadFinalizeRequest):
     return {"fileId": file_id}
 
 @router.post("/attribute", response_model=AttributeResponse)
+@router_public.post("/attribute", response_model=AttributeResponse)
 def attribute(payload: AttributeRequest):
     result = attribute_dialogue(segments=payload.segments, audio_file_id=payload.fileId)
     return result
 
 @router.post("/summarize", response_model=SummarizeResponse)
+@router_public.post("/summarize", response_model=SummarizeResponse)
 def summarize(payload: SummarizeRequest):
     result = summarize_note(transcript=payload.transcript, dialogue=payload.dialogue, audio_file_id=payload.audioFileId)
     return result

@@ -12,19 +12,17 @@ app = FastAPI(title="Personal Portfolio Backend API")
 
 # Configure CORS using a single variable: BACKEND_URL
 backend_url = os.environ.get("BACKEND_URL", "http://localhost:8000").lower()
-is_local_backend = ("localhost" in backend_url) or ("127.0.0.1" in backend_url)
 origins = [
     "http://localhost:3000",
     "http://localhost:3001",
-] if is_local_backend else [
     "https://asadullahqamarbhatti.com",
+    "https://www.asadullahqamarbhatti.com",
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_origin_regex=r"https://.*\.vercel\.app",
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -32,6 +30,7 @@ app.add_middleware(
 app.include_router(health.router)
 app.include_router(welcome.router)
 app.include_router(scribe.router)
+app.include_router(scribe.router_public)
 app.include_router(model_a.router)
 
 # For Vercel deployment
