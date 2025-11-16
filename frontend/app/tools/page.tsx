@@ -16,8 +16,8 @@ export default function Tools() {
     },
     {
       title: "Coming Soon",
-      desc: "More AI-powered tools will appear here soon.",
-      href: undefined,
+      desc: "Crime rate predictor, heat forecast, Pokemon Unite analytics, and more.",
+      href: "/tools/coming-soon",
     },
   ];
 

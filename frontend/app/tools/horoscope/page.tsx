@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Card from "@/app/components/ui/Card";
-import SectionHeading from "@/app/components/ui/Heading";
 import Button from "@/app/components/ui/Button";
 
 type Preferences = { tone?: "soft" | "neutral" | "direct"; focus?: "work" | "love" | "self-care" };
@@ -63,7 +62,7 @@ export default function HoroscopeTool() {
         return (
           <div className="flex flex-col gap-2">
             <label className="text-sm">Sign</label>
-            <select className="border rounded px-3 py-2" value={inputs.sign || "Aries"} onChange={(e) => setInputs({ ...inputs, sign: e.target.value })}>
+            <select className="px-3 py-2 rounded-md bg-zinc-100 text-zinc-700 border border-zinc-200" value={inputs.sign || "Aries"} onChange={(e) => setInputs({ ...inputs, sign: e.target.value })}>
               {SIGNS.map((s) => (
                 <option key={s} value={s}>{s}</option>
               ))}
@@ -75,7 +74,7 @@ export default function HoroscopeTool() {
         return (
           <div className="flex flex-col gap-2">
             <label className="text-sm">Birth Year</label>
-            <input className="border rounded px-3 py-2" type="number" value={inputs.birth_year || ""} onChange={(e) => setInputs({ ...inputs, birth_year: Number(e.target.value) })} />
+            <input className="px-3 py-2 rounded-md bg-zinc-100 text-zinc-700 border border-zinc-200" type="number" value={inputs.birth_year || ""} onChange={(e) => setInputs({ ...inputs, birth_year: Number(e.target.value) })} />
           </div>
         );
       }
@@ -84,31 +83,30 @@ export default function HoroscopeTool() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div className="flex flex-col gap-2">
           <label className="text-sm">Birth Date (YYYY-MM-DD)</label>
-          <input className="border rounded px-3 py-2" placeholder="1996-04-12" value={inputs.birth_date || ""} onChange={(e) => setInputs({ ...inputs, birth_date: e.target.value })} />
+          <input className="px-3 py-2 rounded-md bg-zinc-100 text-zinc-700 border border-zinc-200" placeholder="1996-04-12" value={inputs.birth_date || ""} onChange={(e) => setInputs({ ...inputs, birth_date: e.target.value })} />
         </div>
         <div className="flex flex-col gap-2">
           <label className="text-sm">Birth Time (HH:MM)</label>
-          <input className="border rounded px-3 py-2" placeholder="08:30" value={inputs.birth_time || ""} onChange={(e) => setInputs({ ...inputs, birth_time: e.target.value })} />
+          <input className="px-3 py-2 rounded-md bg-zinc-100 text-zinc-700 border border-zinc-200" placeholder="08:30" value={inputs.birth_time || ""} onChange={(e) => setInputs({ ...inputs, birth_time: e.target.value })} />
         </div>
         <div className="flex flex-col gap-2">
           <label className="text-sm">Location</label>
-          <input className="border rounded px-3 py-2" placeholder="City, Country" value={inputs.location || ""} onChange={(e) => setInputs({ ...inputs, location: e.target.value })} />
+          <input className="px-3 py-2 rounded-md bg-zinc-100 text-zinc-700 border border-zinc-200" placeholder="City, Country" value={inputs.location || ""} onChange={(e) => setInputs({ ...inputs, location: e.target.value })} />
         </div>
       </div>
     );
   };
 
   return (
-    <section id="tools" className="relative w-full min-h-[100dvh] h-[100dvh] px-4 sm:px-6 md:px-8 pb-0 font-sans snap-start" style={{ paddingTop: "calc(var(--navbar-height) + 36px)" }}>
+    <section id="tools" className="relative w-full min-h-[100dvh] h-[100dvh] px-4 sm:px-6 md:px-8 pb-0 font-sans snap-start" style={{ paddingTop: "calc(var(--navbar-height) + 36px)", ["--navbar-height"]: "108px" } as React.CSSProperties}>
       <div className="max-w-6xl mx-auto h-full flex flex-col pb-24">
-        <SectionHeading title="Daily Horoscope" subtitle="Select a philosophy and generate your daily guidance." className="mb-0" />
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 flex-1 min-h-0">
+        <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-6 flex-1 min-h-0">
           <Card>
             <div className="flex flex-col gap-4">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="flex flex-col gap-2">
                   <label className="text-sm">Philosophy</label>
-                  <select className="border rounded px-3 py-2" value={philosophy} onChange={(e) => onPhilosophy(e.target.value)}>
+                  <select className="px-3 py-2 rounded-md bg-zinc-100 text-zinc-700 border border-zinc-200" value={philosophy} onChange={(e) => onPhilosophy(e.target.value)}>
                     <option value="western">Western</option>
                     <option value="chinese">Chinese</option>
                     <option value="vedic">Vedic</option>
@@ -116,14 +114,14 @@ export default function HoroscopeTool() {
                 </div>
                 <div className="flex flex-col gap-2">
                   <label className="text-sm">Mode</label>
-                  <select className="border rounded px-3 py-2" value={mode} onChange={(e) => setMode(e.target.value)}>
+                  <select className="px-3 py-2 rounded-md bg-zinc-100 text-zinc-700 border border-zinc-200" value={mode} onChange={(e) => setMode(e.target.value)}>
                     <option value="basic">Basic</option>
                     <option value="advanced">Advanced</option>
                   </select>
                 </div>
                 <div className="flex flex-col gap-2">
                   <label className="text-sm">Tone</label>
-                  <select className="border rounded px-3 py-2" value={preferences.tone} onChange={(e) => setPreferences({ ...preferences, tone: e.target.value as Preferences["tone"] })}>
+                  <select className="px-3 py-2 rounded-md bg-zinc-100 text-zinc-700 border border-zinc-200" value={preferences.tone} onChange={(e) => setPreferences({ ...preferences, tone: e.target.value as Preferences["tone"] })}>
                     <option value="soft">Soft</option>
                     <option value="neutral">Neutral</option>
                     <option value="direct">Direct</option>
@@ -133,7 +131,7 @@ export default function HoroscopeTool() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="flex flex-col gap-2">
                   <label className="text-sm">Focus</label>
-                  <select className="border rounded px-3 py-2" value={preferences.focus} onChange={(e) => setPreferences({ ...preferences, focus: e.target.value as Preferences["focus"] })}>
+                  <select className="px-3 py-2 rounded-md bg-zinc-100 text-zinc-700 border border-zinc-200" value={preferences.focus} onChange={(e) => setPreferences({ ...preferences, focus: e.target.value as Preferences["focus"] })}>
                     <option value="work">Work</option>
                     <option value="love">Love</option>
                     <option value="self-care">Self-care</option>
@@ -155,7 +153,7 @@ export default function HoroscopeTool() {
             ) : (
               <div className="flex flex-col gap-3">
                 <h3 className="text-lg font-semibold">Today</h3>
-                <p className="text-sm">{result.text}</p>
+                <p className="text-sm text-zinc-800">{result.text}</p>
                 <div className="grid grid-cols-2 gap-2 text-sm">
                   <div>Mood: <span className="font-medium">{result.mood}</span></div>
                   <div>Energy: <span className="font-medium">{result.energy}</span></div>
