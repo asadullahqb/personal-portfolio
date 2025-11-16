@@ -20,7 +20,7 @@ export default function Publications() {
           <UnderConstruction title="Publications are being assembled." />
         </Card>
       </div>
-      <div className="absolute bottom-6 right-4 sm:right-6 hidden sm:flex items-center gap-3 z-10">
+      <div className="absolute bottom-6 right-4 sm:right-6 flex items-center gap-3 z-10">
         <Button href="#associatedProducts" variant="primary" className="px-0 py-0 w-10 h-10 rounded-full text-white shadow-md hover:scale-105 transition transform" ariaLabel="Scroll up">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M12 7.5l6 6-1.4 1.4L12 10.3l-4.6 4.6L6 13.5l6-6z" />
