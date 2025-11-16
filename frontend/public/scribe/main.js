@@ -6,10 +6,15 @@ const storage = {
   set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
 };
 
-let config = storage.get(cfgKey, { apiBase: "http://localhost:8000", lang: "en-US" });
+const isLocal = typeof window !== "undefined" ? /^(localhost|127\.0\.0\.1|0\.0\.0\.0)$/.test(window.location.hostname) : true;
+const defaultBase = isLocal ? "http://localhost:8000" : "https://personal-portfolio-backend-nm7v.onrender.com";
+let config = storage.get(cfgKey, { apiBase: defaultBase, lang: "en-US" });
 try {
   const a = (config.apiBase || "").trim();
-  if (a.includes("localhost:8787")) {
+  if (!isLocal && a.includes("localhost")) {
+    config.apiBase = defaultBase;
+    storage.set(cfgKey, config);
+  } else if (isLocal && a.includes("localhost:8787")) {
     config.apiBase = "http://localhost:8000";
     storage.set(cfgKey, config);
   }

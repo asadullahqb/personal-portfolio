@@ -59,14 +59,24 @@ function useLocalStorage<T>(key: string, initial: T) {
 }
 
 function ScribeClient() {
+  const defaultBase = (typeof window !== "undefined" && window.location && !/^(localhost|127\.0\.0\.1|0\.0\.0\.0)$/.test(window.location.hostname))
+    ? (process.env.NEXT_PUBLIC_BACKEND_URL || "https://personal-portfolio-backend-nm7v.onrender.com")
+    : "http://localhost:8000";
   const [config, setConfig] = useLocalStorage<{ apiBase: string; lang: string }>(
     "scribe_config",
-    { apiBase: "http://localhost:8000", lang: "en-US" }
+    { apiBase: defaultBase, lang: "en-US" }
   );
   useEffect(() => {
     const a = (config.apiBase || "").trim();
     if (a.includes("localhost:8787")) {
       setConfig({ apiBase: "http://localhost:8000", lang: config.lang });
+    }
+  }, [config.apiBase]);
+  useEffect(() => {
+    const hostOk = typeof window !== "undefined" && window.location && !/^(localhost|127\.0\.0\.1|0\.0\.0\.0)$/.test(window.location.hostname);
+    const a = (config.apiBase || "");
+    if (hostOk && a.includes("localhost")) {
+      setConfig({ apiBase: process.env.NEXT_PUBLIC_BACKEND_URL || "https://personal-portfolio-backend-nm7v.onrender.com", lang: config.lang });
     }
   }, [config.apiBase]);
   const [transcript, setTranscript] = useState("");
@@ -82,6 +92,26 @@ function ScribeClient() {
   const restartTimerRef = useRef<number | null>(null);
   const segmentsRef = useRef<{ ts?: number; text: string }[]>([]);
   const attrTimerRef = useRef<number | null>(null);
+  
+  async function attributeNow() {
+    const segments = segmentsRef.current.slice(-200);
+    if (!segments.length) return;
+    setStatus("Attributing");
+    try {
+      const res = await fetch(config.apiBase + "/attribute", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ segments }) });
+      if (!res.ok) { setStatus("Attribute failed"); return; }
+      const json = await res.json();
+      const d = json.dialogue;
+      setDialogue(typeof d === "string" ? d : JSON.stringify(d, null, 2));
+      setStatus("Attributed");
+    } catch {
+      setStatus("Attribute failed");
+    }
+  }
+  function scheduleAttribute() {
+    if (attrTimerRef.current) { clearTimeout(attrTimerRef.current); }
+    attrTimerRef.current = window.setTimeout(() => { attributeNow(); attrTimerRef.current = null; }, 1000);
+  }
 
   useEffect(() => {
     const w = window as unknown as { SpeechRecognition?: new () => Recognition; webkitSpeechRecognition?: new () => Recognition };
@@ -184,26 +214,9 @@ function ScribeClient() {
     }
   }
 
-  async function attributeNow() {
-    const segments = segmentsRef.current.slice(-200);
-    if (!segments.length) return;
-    setStatus("Attributing");
-    try {
-      const res = await fetch(config.apiBase + "/attribute", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ segments }) });
-      if (!res.ok) { setStatus("Attribute failed"); return; }
-      const json = await res.json();
-      const d = json.dialogue;
-      setDialogue(typeof d === "string" ? d : JSON.stringify(d, null, 2));
-      setStatus("Attributed");
-    } catch {
-      setStatus("Attribute failed");
-    }
-  }
+  
 
-  function scheduleAttribute() {
-    if (attrTimerRef.current) { clearTimeout(attrTimerRef.current); }
-    attrTimerRef.current = window.setTimeout(() => { attributeNow(); attrTimerRef.current = null; }, 1000);
-  }
+  
 
   function setLang(newLang: string) { setConfig({ apiBase: config.apiBase, lang: newLang || config.lang }); }
 
