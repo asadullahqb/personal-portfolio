@@ -10,12 +10,14 @@ from app.routers import health, welcome, scribe, model_a
 
 app = FastAPI(title="Personal Portfolio Backend API")
 
-# Configure CORS for both local development and production
+# Configure CORS using a single variable: BACKEND_URL
+backend_url = os.environ.get("BACKEND_URL", "http://localhost:8000").lower()
+is_local_backend = ("localhost" in backend_url) or ("127.0.0.1" in backend_url)
 origins = [
     "http://localhost:3000",
     "http://localhost:3001",
-    "https://*.vercel.app",
-    "https://*.onrender.com",
+] if is_local_backend else [
+    "https://asadullahqamarbhatti.com",
 ]
 
 app.add_middleware(

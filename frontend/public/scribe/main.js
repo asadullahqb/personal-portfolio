@@ -20,6 +20,14 @@ try {
   }
 } catch {}
 
+function resolveApiBase() {
+  const isLocalHost = typeof window !== "undefined" ? /^(localhost|127\.0\.0\.1|0\.0\.0\.0)$/.test(window.location.hostname) : true;
+  if (isLocalHost) return (config.apiBase || defaultBase);
+  const a = (config.apiBase || "").trim();
+  if (a.includes("localhost")) return defaultBase;
+  return a || defaultBase;
+}
+
 const els = {
   status: document.getElementById("status"),
   startBtn: document.getElementById("startBtn"),
@@ -154,7 +162,7 @@ async function uploadAudioFile() {
 async function attributeSpeakers() {
   if (!currentFileId) { setStatus("No file uploaded"); return; }
   setStatus("Attributing");
-  const res = await fetch(config.apiBase + "/attribute", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ fileId: currentFileId }) });
+  const res = await fetch(resolveApiBase() + "/attribute", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ fileId: currentFileId }) });
   if (!res.ok) { setStatus("Attribute failed"); return; }
   const json = await res.json();
   const d = json.dialogue;
@@ -166,7 +174,7 @@ async function summarize() {
   setStatus("Summarizing");
   const payload = { transcript: els.transcript.value, dialogue: els.dialogue.value };
   try {
-    const res = await fetch(config.apiBase + "/summarize", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+    const res = await fetch(resolveApiBase() + "/summarize", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
     if (!res.ok) { setStatus("Summarize failed"); return; }
     const json = await res.json();
     const n = json.note;

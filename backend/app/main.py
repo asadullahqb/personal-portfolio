@@ -19,10 +19,19 @@ from app.routers import health, welcome, scribe, model_a
 
 app = FastAPI(title="Multi-Model ML API")
 
-# Add CORS middleware directly after creating the app instance
+# Configure CORS using a single variable: BACKEND_URL
+backend_url = os.environ.get("BACKEND_URL", "http://localhost:8000").lower()
+is_local_backend = ("localhost" in backend_url) or ("127.0.0.1" in backend_url)
+origins = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+] if is_local_backend else [
+    "https://asadullahqamarbhatti.com",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:3001"],
+    allow_origins=origins,
     allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],

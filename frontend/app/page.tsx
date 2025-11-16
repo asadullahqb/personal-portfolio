@@ -8,29 +8,14 @@ import Tools from "./tools/page";
 import AssociatedProducts from "./associatedProducts/page";
 
 // Determine backend URL based on environment (dev or prod)
-function getBackendBaseUrl(env: 'development' | 'production' = 'development') {
-  if (env === 'production') {
-    const wProd = typeof window !== "undefined" ? (window as unknown as { __NEXT_PUBLIC_BACKEND_URL__?: string }) : undefined;
-    if (wProd && wProd.__NEXT_PUBLIC_BACKEND_URL__) {
-      return wProd.__NEXT_PUBLIC_BACKEND_URL__;
-    }
-    if (process.env.NEXT_PUBLIC_BACKEND_URL) {
-      return process.env.NEXT_PUBLIC_BACKEND_URL;
-    }
-    if (typeof window !== "undefined" && window.location && window.location.hostname.includes("your-production-domain.com")) {
-      return "https://personal-portfolio-backend-nm7v.onrender.com";
-    }
-    return "https://personal-portfolio-backend-nm7v.onrender.com";
-  } else {
-    const wDev = typeof window !== "undefined" ? (window as unknown as { __NEXT_PUBLIC_BACKEND_URL__?: string }) : undefined;
-    if (wDev && wDev.__NEXT_PUBLIC_BACKEND_URL__) {
-      return wDev.__NEXT_PUBLIC_BACKEND_URL__;
-    }
-    if (process.env.NEXT_PUBLIC_BACKEND_URL) {
-      return process.env.NEXT_PUBLIC_BACKEND_URL;
-    }
-    return "http://localhost:8000";
-  }
+function getBackendBaseUrl() {
+  const isProd = typeof window !== "undefined"
+    ? !/^(localhost|127\.0\.0\.1|0\.0\.0\.0)$/.test(window.location.hostname)
+    : process.env.NODE_ENV === "production";
+  const envUrl = process.env.BACKEND_URL;
+  const defProd = "https://personal-portfolio-backend-nm7v.onrender.com";
+  const defDev = "http://localhost:8000";
+  return isProd ? (envUrl || defProd) : (envUrl || defDev);
 }
 
 function getUserIP(): string | undefined {
@@ -71,7 +56,7 @@ function TypewriterWelcome({ onContinue }: { onContinue?: () => void }) {
         }
       } catch {}
       try {
-        const backendBase = getBackendBaseUrl('production');
+        const backendBase = getBackendBaseUrl();
         const response = await fetch(`${backendBase}/welcome/`, {
           method: "POST",
           headers: {

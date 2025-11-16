@@ -60,7 +60,7 @@ function useLocalStorage<T>(key: string, initial: T) {
 
 function ScribeClient() {
   const defaultBase = (typeof window !== "undefined" && window.location && !/^(localhost|127\.0\.0\.1|0\.0\.0\.0)$/.test(window.location.hostname))
-    ? (process.env.NEXT_PUBLIC_BACKEND_URL || "https://personal-portfolio-backend-nm7v.onrender.com")
+    ? (process.env.BACKEND_URL || "https://personal-portfolio-backend-nm7v.onrender.com")
     : "http://localhost:8000";
   const [config, setConfig] = useLocalStorage<{ apiBase: string; lang: string }>(
     "scribe_config",
@@ -79,6 +79,12 @@ function ScribeClient() {
       setConfig({ apiBase: process.env.NEXT_PUBLIC_BACKEND_URL || "https://personal-portfolio-backend-nm7v.onrender.com", lang: config.lang });
     }
   }, [config.apiBase]);
+  function resolveApiBase(): string {
+    const hostOk = typeof window !== "undefined" && window.location && !/^(localhost|127\.0\.0\.1|0\.0\.0\.0)$/.test(window.location.hostname);
+    if (hostOk) return process.env.BACKEND_URL || "https://personal-portfolio-backend-nm7v.onrender.com";
+    const a = (config.apiBase || "").trim();
+    return a || "http://localhost:8000";
+  }
   const [transcript, setTranscript] = useState("");
   const [note, setNote] = useState("");
   const [dialogue, setDialogue] = useState("");
@@ -98,7 +104,7 @@ function ScribeClient() {
     if (!segments.length) return;
     setStatus("Attributing");
     try {
-      const res = await fetch(config.apiBase + "/attribute", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ segments }) });
+      const res = await fetch(resolveApiBase() + "/attribute", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ segments }) });
       if (!res.ok) { setStatus("Attribute failed"); return; }
       const json = await res.json();
       const d = json.dialogue;
@@ -203,7 +209,7 @@ function ScribeClient() {
     setStatus("Summarizing");
     const payload = { transcript, dialogue };
     try {
-      const res = await fetch(config.apiBase + "/summarize", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+      const res = await fetch(resolveApiBase() + "/summarize", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       if (!res.ok) { setStatus("Summarize failed"); return; }
       const json = await res.json();
       const n = json.note;
