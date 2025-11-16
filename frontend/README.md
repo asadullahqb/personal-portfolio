@@ -12,7 +12,7 @@ Visit the site at https://asadullahqamarbhatti.com
 
 #### Welcome Page
 
-When you access the site, you are greeted with a welcome message translated to the language of where you come from. This is powered by AI.
+When you access the site, you are greeted with a welcome message translated to the language you use. This is powered by AI.
 
 #### Tools
 
