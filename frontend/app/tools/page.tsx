@@ -10,6 +10,11 @@ export default function Tools() {
       href: "/tools/scribe",
     },
     {
+      title: "Daily Horoscope",
+      desc: "Personalized daily guidance with philosophy selector.",
+      href: "/tools/horoscope",
+    },
+    {
       title: "Coming Soon",
       desc: "More AI-powered tools will appear here soon.",
       href: undefined,

@@ -77,6 +77,7 @@ export default function Navbar() {
 
   const subNavItems = [
     { name: "Medical Scribe", href: "/tools/scribe" },
+    { name: "Daily Horoscope", href: "/tools/horoscope" },
     { name: "Coming Soon", href: "/tools/coming-soon" },
   ];
   const currentSubLabel = pathname ? (subNavItems.find((s) => s.href === pathname)?.name || "Tools") : "Tools";
