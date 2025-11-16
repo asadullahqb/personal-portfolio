@@ -1,24 +1,53 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --lion-brown: #7a4b21;
+  --lion-amber: #c7792d;
+  --lion-gold: #f0a500;
+  --lion-sand: #f6d365;
+  --lion-charcoal: #1e1b14;
+  --jungle-forest: #1b4d3e;
+  --jungle-olive: #556b2f;
+  --jungle-moss: #8a9a5b;
+  --vibrant-teal: #00d1b2;
+  --vibrant-leaf: #2ecc71;
+  --vibrant-mango: #ffbe0b;
+  --vibrant-tangerine: #ff8c1a;
+  --vibrant-sun: #ffd166;
+  --background-solid: var(--lion-sand);
+  --background-gradient: linear-gradient(135deg, var(--vibrant-teal) 0%, var(--vibrant-leaf) 25%, var(--vibrant-mango) 55%, var(--vibrant-tangerine) 85%);
+  --background-overlay: radial-gradient(900px 520px at 20% 12%, rgba(27,77,62,0.30), transparent 60%), radial-gradient(720px 440px at 80% 88%, rgba(85,107,47,0.25), transparent 55%);
+  --pattern-overlay: repeating-linear-gradient(135deg, rgba(255,255,255,0.06) 0 10px, transparent 10px 20px);
+  --heading-gradient: linear-gradient(90deg, var(--vibrant-mango), var(--vibrant-sun), var(--vibrant-leaf));
+  --action-gradient: linear-gradient(90deg, var(--vibrant-mango), var(--vibrant-sun), var(--vibrant-tangerine));
+  --header-background: rgba(0, 209, 178, 0.20);
+  --widget-background: rgba(255, 245, 230, 0.85);
+  --foreground: var(--lion-charcoal);
+  --hero-text-color: #fff7e6;
   --navbar-height: 64px;
 }
 
 @theme inline {
-  --color-background: var(--background);
+  --color-background: var(--background-solid);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
+html {
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
 body {
-  background: var(--background);
+  background: var(--pattern-overlay), var(--background-overlay), var(--background-gradient);
   color: var(--foreground);
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
   scroll-padding-top: calc(var(--navbar-height) + 36px);
   padding-bottom: env(safe-area-inset-bottom);
+}
+
+button, input, textarea, select {
+  font-family: inherit;
 }
 
 /* Global smooth scrolling for anchor jumps */

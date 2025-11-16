@@ -228,7 +228,7 @@ function ScribeClient() {
 
   return (
     <section
-      id="tools"
+      id="scribe"
       className="relative w-full min-h-[100dvh] h-[100dvh] px-4 sm:px-6 md:px-8 pb-0 font-sans snap-start"
       style={{ paddingTop: "calc(var(--navbar-height) + 36px)", ["--navbar-height"]: "108px" } as React.CSSProperties}
     >

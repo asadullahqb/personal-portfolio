@@ -20,14 +20,14 @@ export default function Mentorship() {
           <UnderConstruction title="Mentorship content is coming soon." />
         </Card>
       </div>
-      <div className="absolute bottom-6 right-6 flex items-center gap-3 z-10">
-        <Button href="#publications" className="px-0 py-0 w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-fuchsia-600 text-white shadow-md hover:scale-105 transition transform" ariaLabel="Scroll to previous">
-          <svg className="text-white" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <div className="absolute bottom-6 right-4 sm:right-6 hidden sm:flex items-center gap-3 z-10">
+        <Button href="#publications" variant="primary" className="px-0 py-0 w-10 h-10 rounded-full text-white shadow-md hover:scale-105 transition transform" ariaLabel="Scroll to previous">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M12 7.5l6 6-1.4 1.4L12 10.3l-4.6 4.6L6 13.5l6-6z" />
           </svg>
         </Button>
-        <Button href="#home" className="px-0 py-0 w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-fuchsia-600 text-white shadow-md hover:scale-105 transition transform" ariaLabel="Back to top">
-          <svg className="text-white" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <Button href="#home" variant="primary" className="px-0 py-0 w-10 h-10 rounded-full text-white shadow-md hover:scale-105 transition transform" ariaLabel="Back to top">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M3 12l9-9 9 9h-3v7H6v-7H3z" />
           </svg>
         </Button>

@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 type ActionVariant = "ios" | "android" | "video" | "primary" | "neutral";
 
@@ -10,6 +11,7 @@ type ButtonProps = {
   ariaLabel?: string;
   children?: React.ReactNode;
   className?: string;
+  style?: React.CSSProperties;
 };
 
 const variantClass = (variant: ActionVariant = "neutral") => {
@@ -21,23 +23,32 @@ const variantClass = (variant: ActionVariant = "neutral") => {
     case "video":
       return "bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-600";
     case "primary":
-      return "bg-blue-600 text-white hover:bg-blue-700 focus-visible:ring-blue-600";
+      return "bg-gradient-to-r from-[var(--vibrant-mango)] via-[var(--vibrant-sun)] to-[var(--vibrant-tangerine)] text-white hover:brightness-110 focus-visible:ring-[var(--vibrant-mango)]";
     default:
-      return "bg-zinc-100 text-zinc-700 hover:bg-zinc-200 focus-visible:ring-zinc-400";
+      return "bg-white/70 text-[var(--lion-charcoal)] hover:bg-white/80 focus-visible:ring-[var(--vibrant-teal)]";
   }
 };
 
-export default function Button({ href, onClick, variant = "neutral", ariaLabel, children, className = "" }: ButtonProps) {
+export default function Button({ href, onClick, variant = "neutral", ariaLabel, children, className = "", style }: ButtonProps) {
   const classes = `inline-flex items-center gap-2 px-3 py-2 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${variantClass(variant)} ${className}`;
 
   if (href) {
     const isExternal = /^(https?:\/\/|mailto:|tel:)/.test(href);
+    if (!isExternal) {
+      return (
+        <Link href={href} aria-label={ariaLabel} className={classes} style={style}>
+          {children}
+        </Link>
+      );
+    }
     return (
       <a
         href={href}
-        {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+        target="_blank"
+        rel="noopener noreferrer"
         aria-label={ariaLabel}
         className={classes}
+        style={style}
       >
         {children}
       </a>
@@ -45,7 +56,7 @@ export default function Button({ href, onClick, variant = "neutral", ariaLabel, 
   }
 
   return (
-    <button type="button" onClick={onClick} aria-label={ariaLabel} className={classes}>
+    <button type="button" onClick={onClick} aria-label={ariaLabel} className={classes} style={style}>
       {children}
     </button>
   );
