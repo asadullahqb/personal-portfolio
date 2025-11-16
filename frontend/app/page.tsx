@@ -18,16 +18,14 @@ function getBackendBaseUrl() {
   return isProd ? (envUrl || defProd) : (envUrl || defDev);
 }
 
-function getUserIP(): string | undefined {
-  const w = typeof window !== "undefined" ? (window as unknown as { __NEXT_PUBLIC_USER_IP__?: string }) : undefined;
-  if (w && w.__NEXT_PUBLIC_USER_IP__) {
-    return w.__NEXT_PUBLIC_USER_IP__;
-  }
-  return undefined;
+function getPreferredLanguage(): string {
+  const n = typeof navigator !== "undefined" ? navigator.language : "en";
+  const base = typeof n === "string" ? n.split("-")[0].toLowerCase() : "en";
+  return base || "en";
 }
 
 const CACHE_TTL_MS = 6 * 60 * 60 * 1000;
-const CACHE_KEY = "welcome_message_cache_v1";
+const CACHE_KEY = "welcome_message_cache_v2";
 
 function TypewriterWelcome({ onContinue }: { onContinue?: () => void }) {
   const [fullText, setFullText] = useState<string | null>(null);
@@ -41,15 +39,15 @@ function TypewriterWelcome({ onContinue }: { onContinue?: () => void }) {
 
   useEffect(() => {
     async function fetchFullText() {
-      const ip = getUserIP();
+      const langPref = getPreferredLanguage();
       try {
         const cached = typeof window !== "undefined" ? window.localStorage.getItem(CACHE_KEY) : null;
         if (cached) {
           const parsed = JSON.parse(cached);
           const msg = parsed?.message;
-          const cachedIp = parsed?.ip;
+          const cachedLang = parsed?.lang;
           const ts = parsed?.ts;
-          if (cachedIp === ip && typeof ts === "number" && Date.now() - ts < CACHE_TTL_MS) {
+          if (cachedLang === langPref && typeof ts === "number" && Date.now() - ts < CACHE_TTL_MS) {
             setFullText(typeof msg === "string" ? msg : "Welcome.");
             return;
           }
@@ -63,19 +61,18 @@ function TypewriterWelcome({ onContinue }: { onContinue?: () => void }) {
             "Content-Type": "application/json",
             "Accept": "application/json"
           },
-          body: JSON.stringify({
-            ip
-          })
+          body: JSON.stringify({})
         });
         if (!response.ok) {
           throw new Error(`Network response was not ok (${response.status})`);
         }
         const data = await response.json();
         const msg = data.message ?? "Welcome.";
+        const lang = typeof data.language === "string" ? data.language : langPref;
         setFullText(msg);
         try {
           if (typeof window !== "undefined") {
-            window.localStorage.setItem(CACHE_KEY, JSON.stringify({ message: msg, ip, ts: Date.now() }));
+            window.localStorage.setItem(CACHE_KEY, JSON.stringify({ message: msg, lang, ts: Date.now() }));
           }
         } catch {}
       } catch {
