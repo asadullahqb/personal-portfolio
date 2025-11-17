@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Card from "@/app/components/ui/Card";
 import Button from "@/app/components/ui/Button";
 import Badge from "@/app/components/ui/Badge";
@@ -16,6 +17,14 @@ function useApiBase() {
 }
 
 export default function WhistleblowerPage() {
+  const enabled = typeof process !== "undefined" && (process.env.NEXT_PUBLIC_ENABLE_WHISTLEBLOWER === "true");
+  const router = useRouter();
+  useEffect(() => {
+    if (!enabled) {
+      router.replace("/tools/coming-soon");
+    }
+  }, [enabled, router]);
+  if (!enabled) return null;
   const apiBase = useApiBase();
   const [targetType, setTargetType] = useState("individual");
   const [name, setName] = useState("");

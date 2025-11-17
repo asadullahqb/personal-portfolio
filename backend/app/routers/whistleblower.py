@@ -11,6 +11,8 @@ class InvestigationRequest(BaseModel):
     organisation: Optional[str] = None
     timeframe: Optional[str] = None
     context: Optional[str] = None
+    deep_search: Optional[bool] = False
+    limit: Optional[int] = 20
 
 class SourceItem(BaseModel):
     url: str
@@ -26,7 +28,15 @@ class InvestigationResponse(BaseModel):
 
 @router.post("/analyze", response_model=InvestigationResponse)
 def analyze(req: InvestigationRequest) -> InvestigationResponse:
-    out = run_investigation(req.target_type, req.name, req.organisation, req.timeframe, req.context)
+    out = run_investigation(
+        req.target_type,
+        req.name,
+        req.organisation,
+        req.timeframe,
+        req.context,
+        deep_search=bool(req.deep_search),
+        deep_limit=int(req.limit or 20),
+    )
     if "error" in out:
         raise HTTPException(status_code=400, detail=out["error"]) 
     return InvestigationResponse(**out)
