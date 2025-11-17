@@ -10,6 +10,11 @@ export default function Tools() {
       href: "/tools/scribe",
     },
     {
+      title: "Agentic Whistleblower",
+      desc: "Public-source risk assessment for Malaysia AI/Data actors.",
+      href: "/tools/whistleblower",
+    },
+    {
       title: "Daily Horoscope",
       desc: "Personalized daily guidance with philosophy selector.",
       href: "/tools/horoscope",

@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 # Add the backend directory to Python path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from app.routers import health, welcome, scribe, model_a, horoscope
+from app.routers import health, welcome, scribe, model_a, horoscope, whistleblower
 
 app = FastAPI(title="Personal Portfolio Backend API")
 
@@ -34,6 +34,7 @@ app.include_router(scribe.router)
 app.include_router(scribe.router_public)
 app.include_router(model_a.router)
 app.include_router(horoscope.router)
+app.include_router(whistleblower.router)
 
 # For Vercel deployment
 if __name__ == "__main__":
