@@ -3,18 +3,12 @@ import SectionHeading from "@/app/components/ui/Heading";
 import Button from "@/app/components/ui/Button";
 
 export default function Tools() {
-  const wbEnabled = typeof process !== "undefined" && (process.env.NEXT_PUBLIC_ENABLE_WHISTLEBLOWER === "true");
   const items = [
     {
       title: "Medical Scribe Assistant",
       desc: "Record, attribute speakers, and generate clinical notes.",
       href: "/tools/scribe",
     },
-    ...(wbEnabled ? [{
-      title: "Agentic Whistleblower",
-      desc: "Public-source risk assessment for Malaysia AI/Data actors.",
-      href: "/tools/whistleblower",
-    }] : []),
     {
       title: "Daily Horoscope",
       desc: "Personalized daily guidance with philosophy selector.",

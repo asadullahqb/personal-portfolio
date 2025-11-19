@@ -103,10 +103,8 @@ export default function Navbar() {
   }, [active, pathname]);
 
 
-  const wbEnabled = typeof process !== "undefined" && (process.env.NEXT_PUBLIC_ENABLE_WHISTLEBLOWER === "true");
   const subNavItems = [
     { name: "Medical Scribe", href: "/tools/scribe" },
-    ...(wbEnabled ? [{ name: "Agentic Whistleblower", href: "/tools/whistleblower" }] : []),
     { name: "Daily Horoscope", href: "/tools/horoscope" },
     { name: "Coming Soon", href: "/tools/coming-soon" },
   ];

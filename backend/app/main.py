@@ -15,7 +15,7 @@ else:
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import health, welcome, scribe, model_a, horoscope, whistleblower
+from app.routers import health, welcome, scribe, model_a, horoscope
 
 app = FastAPI(title="Multi-Model ML API")
 
@@ -43,4 +43,3 @@ app.include_router(scribe.router)
 app.include_router(scribe.router_public)
 app.include_router(model_a.router)
 app.include_router(horoscope.router)
-app.include_router(whistleblower.router)
